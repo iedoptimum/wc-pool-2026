@@ -425,7 +425,15 @@
       row.innerHTML = `
         <div class="lb-rank">${i + 1}</div>
         <div class="lb-flag-circle">
-  			${getFlagImg(p.championFlag)}
+		  ${p.flagUrl
+			? `<img
+				src="${p.flagUrl}"
+				alt="${p.champion} flag"
+				style="width:32px;height:auto;border-radius:3px;"
+				onerror="this.style.display='none'"
+			  />`
+			: `<span style="font-size:11px;color:#8A94A8">TBD</span>`
+		  }
 		</div>
         <div class="lb-info">
           <div class="lb-name">${p.name}</div>
