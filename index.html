@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Club World Cup 2025 · Pool Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:        #F0C040;
+      --gold-dim:    #B8922A;
+      --navy:        #0B1120;
+      --navy2:       #121B2E;
+      --navy3:       #1A2540;
+      --navy4:       #232F4A;
+      --card-border: rgba(240,192,64,0.18);
+      --bright:      #F0EDE6;
+      --muted:       #8A94A8;
+      --dim:         #5A6478;
+      --green:       #34C97A;
+      --red:         #E25555;
+      --blue:        #4A9FE8;
+    }
+
+    html, body {
+      background: var(--navy);
+      color: var(--bright);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #0F1B34 0%, #0B1120 60%);
+      padding: 1.5rem 1rem 1rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .hero-ring {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-ring-1 { top:-20px; right:-30px; width:180px; height:180px; border:40px solid rgba(240,192,64,0.05); }
+    .hero-ring-2 { bottom:-40px; left:-40px; width:140px; height:140px; border:30px solid rgba(74,159,232,0.05); }
+    .hero-label  { font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dim); font-weight:500; margin-bottom:6px; }
+    .hero-title  { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; color:var(--bright); line-height:1.05; }
+    .hero-title span { color:var(--gold); }
+    .hero-meta   { margin-top:10px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+    .hero-updated { font-size:10px; color:var(--dim); margin-top:4px; }
+
+    .pill { font-size:11px; padding:3px 10px; border-radius:20px; font-weight:500; }
+    .pill-live    { background:rgba(52,201,122,0.15);  color:var(--green); border:1px solid rgba(52,201,122,0.3); }
+    .pill-players { background:rgba(74,159,232,0.12);  color:var(--blue);  border:1px solid rgba(74,159,232,0.25); }
+    .pill-loading { background:rgba(240,192,64,0.12);  color:var(--gold);  border:1px solid rgba(240,192,64,0.25); }
+
+    /* ── TABS ── */
+    .tabs {
+      display:flex;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      padding:0 1rem;
+    }
+    .tab {
+      font-size:12px; font-weight:500; color:var(--dim);
+      padding:8px 12px 9px; border-bottom:2px solid transparent;
+      cursor:pointer; transition:all 0.15s; letter-spacing:0.3px;
+      background:none; border-top:none; border-left:none; border-right:none;
+    }
+    .tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* ── LEADERBOARD ROWS ── */
+    .lb-row {
+      display:flex; align-items:center; gap:10px;
+      padding:11px 1rem; border-bottom:1px solid rgba(255,255,255,0.04);
+      position:relative; transition:background 0.15s;
+    }
+    .lb-row:active { background:rgba(255,255,255,0.03); }
+    .lb-row.rank-1 { background:linear-gradient(90deg,rgba(240,192,64,0.08) 0%,transparent 80%); }
+    .lb-row.rank-1::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--gold);    border-radius:0 2px 2px 0; }
+    .lb-row.rank-2::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:#C0C8D8; border-radius:0 2px 2px 0; }
+    .lb-row.rank-3::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:#CD7F32; border-radius:0 2px 2px 0; }
+
+    .lb-rank { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--dim); min-width:22px; text-align:center; }
+    .lb-row.rank-1 .lb-rank { color:var(--gold); }
+    .lb-row.rank-2 .lb-rank { color:#C0C8D8; }
+    .lb-row.rank-3 .lb-rank { color:#CD7F32; }
+
+    .lb-flag-circle {
+      width:38px; height:38px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; flex-shrink:0;
+      background:var(--navy3); border:2px solid rgba(255,255,255,0.1);
+      line-height:1;
+    }
+    .lb-row.rank-1 .lb-flag-circle { border-color:rgba(240,192,64,0.4); }
+    .lb-row.rank-2 .lb-flag-circle { border-color:rgba(192,200,216,0.4); }
+    .lb-row.rank-3 .lb-flag-circle { border-color:rgba(205,127,50,0.4); }
+
+    .lb-info { flex:1; min-width:0; }
+    .lb-name { font-size:14px; font-weight:500; color:var(--bright); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .lb-champion { font-size:11px; color:var(--muted); margin-top:2px; }
+
+    .lb-right { text-align:right; flex-shrink:0; }
+    .lb-points { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--bright); line-height:1; }
+    .lb-row.rank-1 .lb-points { color:var(--gold); }
+    .lb-pts-label { font-size:9px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
+    .lb-bar-wrap { width:60px; height:4px; background:rgba(255,255,255,0.08); border-radius:2px; margin-top:5px; margin-left:auto; }
+    .lb-bar { height:100%; border-radius:2px; background:var(--dim); }
+    .lb-row.rank-1 .lb-bar { background:var(--gold); }
+    .lb-row.rank-2 .lb-bar { background:#C0C8D8; }
+    .lb-row.rank-3 .lb-bar { background:#CD7F32; }
+
+    /* ── SECTION LABEL ── */
+    .section { padding:1rem 1rem 0; }
+    .section-label {
+      font-size:10px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--dim); font-weight:500; margin-bottom:0.75rem;
+      display:flex; align-items:center; gap:8px;
+    }
+    .section-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.06); }
+
+    /* ── AWARD CARDS ── */
+    .award-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+    .award-card { background:var(--navy2); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px; }
+    .award-icon  { font-size:22px; margin-bottom:6px; }
+    .award-title { font-size:11px; font-weight:600; color:var(--bright); }
+    .award-holder { font-size:13px; color:var(--gold); font-weight:500; margin-top:2px; }
+    .award-sub   { font-size:10px; color:var(--dim); margin-top:3px; }
+
+    /* ── PAYOUT CARDS ── */
+    .payout-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+    .payout-card { background:var(--navy2); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px 12px; }
+    .payout-card.gold { border-color:rgba(240,192,64,0.3); background:rgba(240,192,64,0.05); }
+    .payout-pct  { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--gold); line-height:1; }
+    .payout-card.gold .payout-pct { font-size:36px; }
+    .payout-name { font-size:11px; color:var(--muted); margin-top:2px; font-weight:500; line-height:1.3; }
+    .payout-desc { font-size:10px; color:var(--dim); margin-top:4px; line-height:1.4; }
+
+    /* ── STAGE ROWS ── */
+    .stage-row { display:flex; align-items:center; gap:10px; padding:10px 1rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .stage-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .stage-dot.done     { background:var(--green); }
+    .stage-dot.active   { background:var(--gold); box-shadow:0 0 0 3px rgba(240,192,64,0.2); }
+    .stage-dot.upcoming { background:var(--navy4); border:1px solid var(--dim); }
+    .stage-name   { flex:1; font-size:13px; color:var(--bright); font-weight:500; }
+    .stage-sub    { font-size:11px; color:var(--muted); margin-top:1px; }
+    .stage-payout { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--gold); }
+
+    /* ── CHART ── */
+    .chart-wrap { padding:1rem 1rem 0; }
+    .chart-container { position:relative; width:100%; height:220px; }
+    .legend { display:flex; flex-wrap:wrap; gap:10px; padding:0.5rem 1rem 0; }
+    .leg-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); }
+    .leg-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+    /* ── GAP CARDS ── */
+    .gap-card {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 12px; background:var(--navy2);
+      border-radius:8px; border:1px solid rgba(255,255,255,0.06);
+    }
+    .gap-name  { font-size:13px; font-weight:500; color:var(--bright); min-width:80px; }
+    .gap-bar-wrap { flex:1; height:4px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+    .gap-bar   { height:100%; background:var(--navy4); border-radius:2px; }
+    .gap-diff  { font-size:12px; color:var(--red); font-weight:500; min-width:44px; text-align:right; }
+
+    /* ── LOADING / ERROR STATES ── */
+    .state-box {
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; padding:3rem 1rem; gap:12px; text-align:center;
+    }
+    .state-icon  { font-size:36px; }
+    .state-title { font-size:15px; font-weight:500; color:var(--bright); }
+    .state-sub   { font-size:12px; color:var(--dim); max-width:260px; line-height:1.5; }
+    .retry-btn {
+      margin-top:8px; padding:8px 20px; border-radius:20px;
+      background:rgba(240,192,64,0.12); color:var(--gold);
+      border:1px solid rgba(240,192,64,0.3); font-size:13px;
+      font-family:'DM Sans',sans-serif; cursor:pointer;
+    }
+
+    /* ── FOOTER ── */
+    .footer { padding:1.5rem 1rem 2rem; text-align:center; }
+    .footer-text { font-size:10px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  HERO                                      -->
+<!-- ══════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-ring hero-ring-1"></div>
+  <div class="hero-ring hero-ring-2"></div>
+  <div class="hero-label">FIFA Pool · 2025</div>
+  <div class="hero-title">Club World Cup<br><span>Leaderboard</span></div>
+  <div class="hero-meta">
+    <span class="pill pill-live" id="status-pill">● Live</span>
+    <span class="pill pill-players" id="player-count-pill">— Players</span>
+  </div>
+  <div class="hero-updated" id="last-updated"></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  TABS                                      -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('standings')">Standings</button>
+  <button class="tab"        onclick="switchTab('stages')">Stages</button>
+  <button class="tab"        onclick="switchTab('chart')">Points</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  TAB: STANDINGS                            -->
+<!-- ══════════════════════════════════════════ -->
+<div id="tab-standings" class="tab-panel active">
+
+  <div id="lb-loading" class="state-box">
+    <div class="state-icon">⏳</div>
+    <div class="state-title">Loading standings…</div>
+    <div class="state-sub">Fetching live data from the Leaderboard sheet.</div>
+  </div>
+
+  <div id="lb-error" class="state-box" style="display:none;">
+    <div class="state-icon">⚠️</div>
+    <div class="state-title">Couldn't load data</div>
+    <div class="state-sub">Check that the Apps Script is deployed and the URL is set correctly.</div>
+    <button class="retry-btn" onclick="loadData()">Retry</button>
+  </div>
+
+  <div id="leaderboard-rows" style="display:none;"></div>
+
+  <div class="section" style="margin-top:1rem;">
+    <div class="section-label">Special awards</div>
+    <div class="award-grid">
+      <div class="award-card"><div class="award-icon">🥾</div><div class="award-title">Golden Boot</div><div class="award-holder">TBD</div><div class="award-sub">Top scorer pick</div></div>
+      <div class="award-card"><div class="award-icon">⚽</div><div class="award-title">Golden Ball</div><div class="award-holder">TBD</div><div class="award-sub">Best player pick</div></div>
+      <div class="award-card"><div class="award-icon">🧤</div><div class="award-title">Golden Glove</div><div class="award-holder">TBD</div><div class="award-sub">Best goalkeeper</div></div>
+      <div class="award-card"><div class="award-icon">🥉</div><div class="award-title">3rd Place Pick</div><div class="award-holder">TBD</div><div class="award-sub">Correct pick = 5%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  TAB: STAGES                               -->
+<!-- ══════════════════════════════════════════ -->
+<div id="tab-stages" class="tab-panel">
+  <div class="section" style="padding-top:1rem;">
+    <div class="section-label">Payout structure</div>
+    <div class="payout-grid">
+      <div class="payout-card gold">
+        <div class="payout-pct">50%</div>
+        <div class="payout-name">Grand Champion</div>
+        <div class="payout-desc">Most points overall</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="payout-card" style="flex:1;padding:9px 12px;"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">2nd Place Points</div></div>
+        <div class="payout-card" style="flex:1;padding:9px 12px;"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Group Stage King</div></div>
+      </div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Knockout Buster</div><div class="payout-desc">Most pts in R32 + R16</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Mid-Tournament</div><div class="payout-desc">Cumulative after QF</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">Golden Awards</div><div class="payout-desc">Boot + Ball + Glove</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins</div></div>
+    </div>
+  </div>
+  <div class="section" style="margin-top:1rem;">
+    <div class="section-label">Tournament stages</div>
+  </div>
+  <div id="stage-rows"></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  TAB: CHART                                -->
+<!-- ══════════════════════════════════════════ -->
+<div id="tab-chart" class="tab-panel">
+  <div id="legend" class="legend"></div>
+  <div class="chart-wrap">
+    <div class="chart-container">
+      <canvas id="pointsChart" role="img" aria-label="Bar chart of player points in the Club World Cup 2025 pool">Points data loading.</canvas>
+    </div>
+  </div>
+  <div class="section" style="margin-top:1rem;">
+    <div class="section-label">Points gap to leader</div>
+    <div id="gap-cards" style="display:flex;flex-direction:column;gap:6px;"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-text">FIFA Club World Cup · Pool 2025</div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  SCRIPTS                                   -->
+<!-- ══════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+  // ─────────────────────────────────────────
+  // 🔧 CONFIGURATION
+  // Replace with your deployed Apps Script URL
+  // ─────────────────────────────────────────
+  const SHEET_API = "YOUR_APPS_SCRIPT_URL_HERE";
+
+  // Static stage config — update status as tournament progresses
+  const STAGES = [
+    { name:"Group Stage",     status:"done",     payout:"10%", leaderKey:"groupStage"  },
+    { name:"Round of 32",     status:"done",     payout:"—",   leaderKey:null          },
+    { name:"Round of 16",     status:"active",   payout:"10%", leaderKey:"knockout"    },
+    { name:"Quarter Finals",  status:"upcoming", payout:"10%", leaderKey:"midTourney"  },
+    { name:"Semi Finals",     status:"upcoming", payout:"—",   leaderKey:null          },
+    { name:"3rd Place Match", status:"upcoming", payout:"5%",  leaderKey:null          },
+    { name:"Final",           status:"upcoming", payout:"50%", leaderKey:null          },
+  ];
+
+  const BAR_COLORS = ["#F0C040","#C0C8D8","#CD7F32"];
+  const BAR_DEFAULT = "#3A4A66";
+
+  let chartInstance = null;
+
+  // ─────────────────────────────────────────
+  // FETCH DATA
+  // ─────────────────────────────────────────
+  async function loadData() {
+    showLoading(true);
+    try {
+      const res  = await fetch(SHEET_API);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      renderAll(data);
+      showLoading(false);
+    } catch (err) {
+      console.error("Failed to load leaderboard:", err);
+      showError();
+    }
+  }
+
+  function showLoading(show) {
+    document.getElementById("lb-loading").style.display  = show  ? "flex"  : "none";
+    document.getElementById("lb-error").style.display    = "none";
+    document.getElementById("leaderboard-rows").style.display = show ? "none" : "block";
+  }
+
+  function showError() {
+    document.getElementById("lb-loading").style.display       = "none";
+    document.getElementById("lb-error").style.display         = "flex";
+    document.getElementById("leaderboard-rows").style.display = "none";
+    document.getElementById("status-pill").textContent        = "⚠ Offline";
+    document.getElementById("status-pill").className          = "pill";
+    document.getElementById("status-pill").style.cssText      = "background:rgba(226,85,85,0.15);color:#E25555;border:1px solid rgba(226,85,85,0.3);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;";
+  }
+
+  // ─────────────────────────────────────────
+  // RENDER ALL
+  // ─────────────────────────────────────────
+  function renderAll(data) {
+    const { players, stageLeaders, lastUpdated } = data;
+
+    // Hero meta
+    document.getElementById("player-count-pill").textContent =
+      players.length + " Player" + (players.length !== 1 ? "s" : "");
+
+    if (lastUpdated) {
+      const d = new Date(lastUpdated);
+      document.getElementById("last-updated").textContent =
+        "Updated " + d.toLocaleDateString() + " " +
+        d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+    }
+
+    renderLeaderboard(players);
+    renderStages(STAGES, stageLeaders);
+    renderChart(players);
+    renderGaps(players);
+  }
+
+  // ─────────────────────────────────────────
+  // LEADERBOARD
+  // ─────────────────────────────────────────
+  function renderLeaderboard(players) {
+    const container = document.getElementById("leaderboard-rows");
+    container.innerHTML = "";
+    const maxPts = players[0]?.points || 1;
+
+    players.forEach((p, i) => {
+      const rankClass = i === 0 ? "rank-1" : i === 1 ? "rank-2" : i === 2 ? "rank-3" : "";
+      const barWidth  = Math.round((p.points / maxPts) * 100);
+
+      const row = document.createElement("div");
+      row.className = "lb-row " + rankClass;
+      row.innerHTML = `
+        <div class="lb-rank">${i + 1}</div>
+        <div class="lb-flag-circle">${p.championFlag || "🏳"}</div>
+        <div class="lb-info">
+          <div class="lb-name">${p.name}</div>
+          <div class="lb-champion">${p.champion || "—"}</div>
+        </div>
+        <div class="lb-right">
+          <div class="lb-points">${p.points}</div>
+          <div class="lb-pts-label">pts</div>
+          <div class="lb-bar-wrap">
+            <div class="lb-bar" style="width:${barWidth}%"></div>
+          </div>
+        </div>`;
+      container.appendChild(row);
+    });
+  }
+
+  // ─────────────────────────────────────────
+  // STAGES
+  // ─────────────────────────────────────────
+  function renderStages(stages, stageLeaders) {
+    const container = document.getElementById("stage-rows");
+    container.innerHTML = "";
+
+    stages.forEach(s => {
+      const leader = s.leaderKey && stageLeaders?.[s.leaderKey]
+        ? stageLeaders[s.leaderKey] : null;
+
+      const subText =
+        s.status === "done"     ? "✓ Leader: " + (leader || "—") :
+        s.status === "active"   ? "⚡ In progress" + (leader ? " · " + leader + " leading" : "") :
+        "Upcoming";
+
+      const row = document.createElement("div");
+      row.className = "stage-row";
+      row.innerHTML = `
+        <div class="stage-dot ${s.status}"></div>
+        <div class="lb-info">
+          <div class="stage-name">${s.name}</div>
+          <div class="stage-sub">${subText}</div>
+        </div>
+        <div class="stage-payout">${s.payout}</div>`;
+      container.appendChild(row);
+    });
+  }
+
+  // ─────────────────────────────────────────
+  // CHART
+  // ─────────────────────────────────────────
+  function renderChart(players) {
+    const colors  = players.map((_, i) => BAR_COLORS[i] || BAR_DEFAULT);
+    const legend  = document.getElementById("legend");
+    legend.innerHTML = "";
+    players.forEach((p, i) => {
+      const item = document.createElement("div");
+      item.className = "leg-item";
+      item.innerHTML = `<span class="leg-swatch" style="background:${colors[i]}"></span>${p.name} · ${p.points}`;
+      legend.appendChild(item);
+    });
+
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+    const minY = Math.max(0, Math.min(...players.map(p => p.points)) - 10);
+    const maxY = Math.max(...players.map(p => p.points)) + 8;
+
+    chartInstance = new Chart(
+      document.getElementById("pointsChart").getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: players.map(p => p.name),
+          datasets: [{
+            label: "Points",
+            data: players.map(p => p.points),
+            backgroundColor: colors,
+            borderRadius: 4,
+            borderSkipped: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: {
+              ticks: { color:"#8A94A8", font:{ size:11 } },
+              grid:  { color:"rgba(255,255,255,0.04)" },
+              border:{ color:"rgba(255,255,255,0.08)" },
+            },
+            y: {
+              min: minY, max: maxY,
+              ticks: { color:"#8A94A8", font:{ size:11 } },
+              grid:  { color:"rgba(255,255,255,0.06)" },
+              border:{ color:"rgba(255,255,255,0.08)" },
+            }
+          }
+        }
+      }
+    );
+  }
+
+  // ─────────────────────────────────────────
+  // GAP CARDS
+  // ─────────────────────────────────────────
+  function renderGaps(players) {
+    const container = document.getElementById("gap-cards");
+    container.innerHTML = "";
+    if (players.length < 2) return;
+
+    const leader = players[0].points;
+    players.slice(1).forEach(p => {
+      const gap = leader - p.points;
+      const pct = Math.round((p.points / leader) * 100);
+      const card = document.createElement("div");
+      card.className = "gap-card";
+      card.innerHTML = `
+        <div class="gap-name">${p.name}</div>
+        <div class="gap-bar-wrap">
+          <div class="gap-bar" style="width:${pct}%"></div>
+        </div>
+        <div class="gap-diff">-${gap} pts</div>`;
+      container.appendChild(card);
+    });
+  }
+
+  // ─────────────────────────────────────────
+  // TAB SWITCHER
+  // ─────────────────────────────────────────
+  function switchTab(name) {
+    const names = ["standings","stages","chart"];
+    document.querySelectorAll(".tab").forEach((t, i) => {
+      t.classList.toggle("active", names[i] === name);
+    });
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("tab-" + name).classList.add("active");
+  }
+
+  // ─────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────
+  loadData();
+
+</script>
+</body>
+</html>
