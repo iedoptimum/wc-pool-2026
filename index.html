@@ -361,8 +361,9 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated, groupStageDone } = data;
-    STAGES[0].status = groupStageDone ? "done" : "active";
+    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone } = data;
+    STAGES[0].status = groupStageDone      ? "done" : "active";
+    STAGES[1].status = knockoutBusterDone  ? "done" : "active";
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
