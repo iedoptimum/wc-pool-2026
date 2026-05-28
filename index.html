@@ -381,6 +381,33 @@
     renderGaps(players);
   }
 
+  //---------------------------------
+  // Converts flag emoji to a country code image
+  // Uses flagcdn.com — free, no API key needed
+  // ─────────────────────────────────────────
+  function getFlagImg(flagEmoji) {
+  if (!flagEmoji || flagEmoji === "🏳") {
+    return `<span style="font-size:18px">🏳</span>`;
+  }
+  try {
+    // Convert emoji to country code e.g. 🇭🇹 → "ht"
+    const code = [...flagEmoji]
+      .map(c => c.codePointAt(0) - 0x1F1E6)
+      .map(n => String.fromCharCode(65 + n))
+      .join("")
+      .toLowerCase();
+
+    return `<img 
+      src="https://flagcdn.com/w40/${code}.png" 
+      alt="${code} flag"
+      style="width:28px;height:auto;border-radius:3px;"
+      onerror="this.style.display='none'"
+    />`;
+  } catch(e) {
+    return `<span style="font-size:18px">${flagEmoji}</span>`;
+  }
+}	
+	
   // ─────────────────────────────────────────
   // LEADERBOARD
   // ─────────────────────────────────────────
@@ -397,7 +424,9 @@
       row.className = "lb-row " + rankClass;
       row.innerHTML = `
         <div class="lb-rank">${i + 1}</div>
-        <div class="lb-flag-circle">${p.championFlag || "🏳"}</div>
+        <div class="lb-flag-circle">
+  			${getFlagImg(p.championFlag)}
+		</div>
         <div class="lb-info">
           <div class="lb-name">${p.name}</div>
           <div class="lb-champion">${p.champion || "—"}</div>
