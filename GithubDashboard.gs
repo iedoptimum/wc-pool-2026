@@ -222,5 +222,7 @@ function writeToLeaderboard(lb, rows, playerName, flagUrl) {
 // Return the name of the player with the highest value in a field
 // ─────────────────────────────────────────────────────────────
 function topPlayer(players, field) {
-  return players.reduce((a, b) => a[field] >= b[field] ? a : b).name;
+  const eligible = players.filter(p => p[field] > 0);
+  if (eligible.length === 0) return null;
+  return eligible.reduce((a, b) => a[field] >= b[field] ? a : b).name;
 }
