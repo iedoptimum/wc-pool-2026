@@ -156,9 +156,16 @@ function doGet() {
     overall:     players[0].name,
   } : {};
 
+  // Check if Group Stage is complete (F108 in Results sheet has a value)
+  const resultsSheet  = ss.getSheetByName("World Cup 2026 Results");
+  const groupStageDone = resultsSheet
+    ? String(resultsSheet.getRange("F108").getValue()).trim() !== ""
+    : false;
+
   const payload = {
     players,
     stageLeaders,
+    groupStageDone,
     lastUpdated: new Date().toISOString(),
   };
 

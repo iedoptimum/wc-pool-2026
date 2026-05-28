@@ -312,7 +312,7 @@
 
   // Static stage config — update status as tournament progresses
   const STAGES = [
-    { name:"Group Stage 👑",     status:"done",     payout:"10%", leaderKey:"groupStage"  },
+    { name:"Group Stage 👑",     status:"active",   payout:"10%", leaderKey:"groupStage"  },
     { name:"Knockout Buster",  status:"active",   payout:"10%", leaderKey:"knockout"    },
     { name:"Quarter Finals",  status:"upcoming", payout:"10%", leaderKey:"midTourney"  },
     { name:"Semi Finals",     status:"upcoming", payout:"—",   leaderKey:null          },
@@ -361,7 +361,8 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated } = data;
+    const { players, stageLeaders, lastUpdated, groupStageDone } = data;
+    STAGES[0].status = groupStageDone ? "done" : "active";
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
