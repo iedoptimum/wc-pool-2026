@@ -412,10 +412,11 @@
         d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
     }
 
-    renderLeaderboard(players);
+    const top7 = players.slice(0, 7);
+    renderLeaderboard(top7);
     renderStages(STAGES, stageLeaders);
-    renderChart(players);
-    renderGaps(players);
+    renderChart(top7);
+    renderGaps(top7);
 
     // 3rd Place award card
     if (thirdPlaceTeam) {
