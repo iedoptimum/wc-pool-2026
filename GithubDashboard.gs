@@ -189,6 +189,8 @@ function doGet() {
     midTourneyDone,
     grandChampionDone,
     thirdPlaceDone: thirdPlaceWinner !== null,
+    thirdPlaceTeam:     resultsSheet ? String(resultsSheet.getRange("P158").getValue()).trim() : "",
+    thirdPlaceTeamFlag: resultsSheet ? String(resultsSheet.getRange("R158").getValue()).trim() : "",
     lastUpdated: new Date().toISOString(),
   };
 

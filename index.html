@@ -245,7 +245,7 @@
       <div class="award-card"><div class="award-icon">🥾</div><div class="award-title">Golden Boot</div><div class="award-holder">TBD</div><div class="award-sub">Top scorer pick</div></div>
       <div class="award-card"><div class="award-icon">⚽</div><div class="award-title">Golden Ball</div><div class="award-holder">TBD</div><div class="award-sub">Best player pick</div></div>
       <div class="award-card"><div class="award-icon">🧤</div><div class="award-title">Golden Glove</div><div class="award-holder">TBD</div><div class="award-sub">Best goalkeeper</div></div>
-      <div class="award-card"><div class="award-icon">🥉</div><div class="award-title">3rd Place Pick</div><div class="award-holder">TBD</div><div class="award-sub">Correct pick = 5%</div></div>
+      <div class="award-card" id="award-third-place"><div class="award-icon">🥉</div><div class="award-title">3rd Place</div><div class="award-holder" id="award-third-place-holder">TBD</div><div class="award-sub">Tournament 3rd place winner</div></div>
     </div>
   </div>
 </div>
@@ -269,7 +269,7 @@
       <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Knockout Buster</div><div class="payout-desc">Most pts in R32 + R16</div></div>
       <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Mid-Tournament</div><div class="payout-desc">Cumulative after QF</div></div>
       <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">Golden Awards</div><div class="payout-desc">Boot + Ball + Glove</div></div>
-      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins (Tie Braker - Least Global Pts)(No winner, goes to 2nd place)</div></div>
     </div>
   </div>
   <div class="section" style="margin-top:1rem;">
@@ -362,7 +362,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone } = data;
+    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -385,6 +385,14 @@
     renderStages(STAGES, stageLeaders);
     renderChart(players);
     renderGaps(players);
+
+    // 3rd Place award card
+    if (thirdPlaceTeam) {
+      const holder = document.getElementById("award-third-place-holder");
+      holder.innerHTML = thirdPlaceTeamFlag
+        ? `<img src="${thirdPlaceTeamFlag}" alt="${thirdPlaceTeam}" style="width:24px;height:auto;border-radius:3px;vertical-align:middle;margin-right:5px;" onerror="this.style.display='none'">${thirdPlaceTeam}`
+        : thirdPlaceTeam;
+    }
   }
 
   //---------------------------------
