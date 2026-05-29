@@ -117,9 +117,9 @@ function doGet() {
   const lb = ss.getSheetByName("Leaderboard");
 
   // Player List: F=Name, G=TotalPoints, H=CountryFlag,
-  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts
+  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts
   const lastRow   = lb.getLastRow();
-  const dataRange = lb.getRange(4, 6, lastRow - 3, 7); // F4:L(lastRow)
+  const dataRange = lb.getRange(4, 6, lastRow - 3, 8); // F4:M(lastRow)
   const rows      = dataRange.getValues();
 
   const players = rows
@@ -141,10 +141,11 @@ function doGet() {
         champion:      championName,
         countryCode:   countryCode,
         flagUrl:       flagUrl,
-        groupPts:      Number(r[3]),
-        knockoutPts:   Number(r[4]),
-        midPts:        Number(r[5]),
-        thirdPlacePts: Number(r[6]),
+        groupPts:        Number(r[3]),
+        knockoutPts:     Number(r[4]),
+        midPts:          Number(r[5]),
+        thirdPlacePts:   Number(r[6]),
+        goldenAwardsPts: Number(r[7]),
       };
     })
     .sort((a, b) => b.points - a.points);
@@ -157,13 +158,23 @@ function doGet() {
     ? thirdPlaceCandidates.reduce((a, b) => a.points <= b.points ? a : b).name
     : null;
 
+  // Golden Awards winner: most points in col M; tiebreak = lowest total points
+  const goldenCandidates = players.filter(p => p.goldenAwardsPts > 0);
+  const goldenAwardsWinner = goldenCandidates.length > 0
+    ? goldenCandidates.reduce((a, b) => {
+        if (a.goldenAwardsPts !== b.goldenAwardsPts) return a.goldenAwardsPts > b.goldenAwardsPts ? a : b;
+        return a.points <= b.points ? a : b;
+      }).name
+    : null;
+
   const stageLeaders = players.length > 0 ? {
     groupStage:  topPlayer(players, "groupPts"),
     knockout:    topPlayer(players, "knockoutPts"),
     midTourney:  topPlayer(players, "midPts"),
     overall:     players[0].name,
     secondPlace: players.length > 1 ? players[1].name : null,
-    thirdPlace:  thirdPlaceWinner,
+    thirdPlace:   thirdPlaceWinner,
+    goldenAwards: goldenAwardsWinner,
   } : {};
 
   // Stage completion flags driven by Results sheet

@@ -269,7 +269,7 @@
       <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Knockout Buster</div><div class="payout-desc">Most pts in R32 + R16</div></div>
       <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Mid-Tournament</div><div class="payout-desc">Cumulative after QF</div></div>
       <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">Golden Awards</div><div class="payout-desc">Boot + Ball + Glove</div></div>
-      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins (Tie Braker - Least Global Pts)(No winner, goes to 2nd place)</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins (Tie Braker - Least Global Pts) (No winner, goes to 2nd place)</div></div>
     </div>
   </div>
   <div class="section" style="margin-top:1rem;">
@@ -318,7 +318,7 @@
     { name:"Grand Champion 🏆",           status:"active",   payout:"50%", leaderKey:"overall" },
     { name:"2nd Place - Almost Champion", status:"active",   payout:"10%", leaderKey:"secondPlace" },
     { name:"3rd Place Pick",              status:"upcoming", payout:"5%",  leaderKey:"thirdPlace" },
-    { name:"Golden Awards",   status:"upcoming", payout:"5%",  leaderKey:null          },
+    { name:"Golden Awards",   status:"upcoming", payout:"5%",  leaderKey:"goldenAwards" },
   ];
 
   const BAR_COLORS = ["#F0C040","#C0C8D8","#CD7F32"];
@@ -368,7 +368,8 @@
     STAGES[2].status = midTourneyDone     ? "done" : "active";
     STAGES[3].status = grandChampionDone  ? "done" : "active";
     STAGES[4].status = grandChampionDone  ? "done" : "active";
-    if (thirdPlaceDone) STAGES[5].status = "done";
+    if (thirdPlaceDone)   STAGES[5].status = "done";
+    if (grandChampionDone) STAGES[6].status = "done";
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
