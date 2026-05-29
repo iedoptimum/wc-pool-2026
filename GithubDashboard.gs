@@ -202,6 +202,9 @@ function doGet() {
     thirdPlaceDone: thirdPlaceWinner !== null,
     thirdPlaceTeam:     resultsSheet ? String(resultsSheet.getRange("P158").getValue()).trim() : "",
     thirdPlaceTeamFlag: resultsSheet ? String(resultsSheet.getRange("R158").getValue()).trim() : "",
+    goldenBoot:  resultsSheet ? String(resultsSheet.getRange("B169").getValue()).trim() : "",
+    goldenBall:  resultsSheet ? String(resultsSheet.getRange("B172").getValue()).trim() : "",
+    goldenGlove: resultsSheet ? String(resultsSheet.getRange("B175").getValue()).trim() : "",
     lastUpdated: new Date().toISOString(),
   };
 
