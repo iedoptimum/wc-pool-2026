@@ -167,6 +167,9 @@ function doGet() {
   const midTourneyDone = resultsSheet
     ? String(resultsSheet.getRange("R129").getValue()).trim() !== ""
     : false;
+  const grandChampionDone = resultsSheet
+    ? String(resultsSheet.getRange("R144").getValue()).trim() !== ""
+    : false;
 
   const payload = {
     players,
@@ -174,6 +177,7 @@ function doGet() {
     groupStageDone,
     knockoutBusterDone,
     midTourneyDone,
+    grandChampionDone,
     lastUpdated: new Date().toISOString(),
   };
 

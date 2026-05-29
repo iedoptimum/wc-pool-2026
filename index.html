@@ -315,7 +315,7 @@
     { name:"Group Stage 👑",     status:"active",   payout:"10%", leaderKey:"groupStage"  },
     { name:"Knockout Buster",  status:"active",   payout:"10%", leaderKey:"knockout"    },
     { name:"Mid-Tournament",  status:"active",   payout:"10%", leaderKey:"midTourney"  },
-    { name:"Grand Champion 🏆",           status:"upcoming", payout:"50%", leaderKey:null },
+    { name:"Grand Champion 🏆",           status:"active",   payout:"50%", leaderKey:"overall" },
     { name:"2nd Place - Almost Champion", status:"upcoming", payout:"10%", leaderKey:null },
     { name:"3rd Place Pick",              status:"upcoming", payout:"5%",  leaderKey:null },
     { name:"Golden Awards",   status:"upcoming", payout:"5%",  leaderKey:null          },
@@ -362,10 +362,11 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone } = data;
+    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
+    STAGES[3].status = grandChampionDone  ? "done" : "active";
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
