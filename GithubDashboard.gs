@@ -154,6 +154,7 @@ function doGet() {
     knockout:    topPlayer(players, "knockoutPts"),
     midTourney:  topPlayer(players, "midPts"),
     overall:     players[0].name,
+    secondPlace: players.length > 1 ? players[1].name : null,
   } : {};
 
   // Stage completion flags driven by Results sheet
@@ -168,7 +169,7 @@ function doGet() {
     ? String(resultsSheet.getRange("R129").getValue()).trim() !== ""
     : false;
   const grandChampionDone = resultsSheet
-    ? String(resultsSheet.getRange("R144").getValue()).trim() !== ""
+    ? String(resultsSheet.getRange("B175").getValue()).trim() !== ""
     : false;
 
   const payload = {
