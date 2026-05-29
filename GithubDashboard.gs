@@ -117,9 +117,9 @@ function doGet() {
   const lb = ss.getSheetByName("Leaderboard");
 
   // Player List: F=Name, G=TotalPoints, H=CountryFlag,
-  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts
+  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts
   const lastRow   = lb.getLastRow();
-  const dataRange = lb.getRange(4, 6, lastRow - 3, 6); // F4:K(lastRow)
+  const dataRange = lb.getRange(4, 6, lastRow - 3, 7); // F4:L(lastRow)
   const rows      = dataRange.getValues();
 
   const players = rows
@@ -144,17 +144,26 @@ function doGet() {
         groupPts:      Number(r[3]),
         knockoutPts:   Number(r[4]),
         midPts:        Number(r[5]),
+        thirdPlacePts: Number(r[6]),
       };
     })
     .sort((a, b) => b.points - a.points);
 
   // Stage leaders
+  // 3rd Place Pick winner: any player with thirdPlacePts === 5;
+  // tiebreak = lowest total points
+  const thirdPlaceCandidates = players.filter(p => p.thirdPlacePts === 5);
+  const thirdPlaceWinner = thirdPlaceCandidates.length > 0
+    ? thirdPlaceCandidates.reduce((a, b) => a.points <= b.points ? a : b).name
+    : null;
+
   const stageLeaders = players.length > 0 ? {
     groupStage:  topPlayer(players, "groupPts"),
     knockout:    topPlayer(players, "knockoutPts"),
     midTourney:  topPlayer(players, "midPts"),
     overall:     players[0].name,
     secondPlace: players.length > 1 ? players[1].name : null,
+    thirdPlace:  thirdPlaceWinner,
   } : {};
 
   // Stage completion flags driven by Results sheet
@@ -179,6 +188,7 @@ function doGet() {
     knockoutBusterDone,
     midTourneyDone,
     grandChampionDone,
+    thirdPlaceDone: thirdPlaceWinner !== null,
     lastUpdated: new Date().toISOString(),
   };
 
