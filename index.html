@@ -314,7 +314,7 @@
   const STAGES = [
     { name:"Group Stage 👑",     status:"active",   payout:"10%", leaderKey:"groupStage"  },
     { name:"Knockout Buster",  status:"active",   payout:"10%", leaderKey:"knockout"    },
-    { name:"Quarter Finals",  status:"upcoming", payout:"10%", leaderKey:"midTourney"  },
+    { name:"Mid-Tournament",  status:"active",   payout:"10%", leaderKey:"midTourney"  },
     { name:"Semi Finals",     status:"upcoming", payout:"—",   leaderKey:null          },
     { name:"3rd Place Match", status:"upcoming", payout:"5%",  leaderKey:null          },
     { name:"Final",           status:"upcoming", payout:"50%", leaderKey:null          },
@@ -361,9 +361,10 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone } = data;
-    STAGES[0].status = groupStageDone      ? "done" : "active";
-    STAGES[1].status = knockoutBusterDone  ? "done" : "active";
+    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone } = data;
+    STAGES[0].status = groupStageDone     ? "done" : "active";
+    STAGES[1].status = knockoutBusterDone ? "done" : "active";
+    STAGES[2].status = midTourneyDone     ? "done" : "active";
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
@@ -463,7 +464,7 @@
         ? stageLeaders[s.leaderKey] : null;
 
       const subText =
-        s.status === "done"     ? "✓ Leader: " + (leader || "—") :
+        s.status === "done"     ? "✓ Winner: " + (leader || "—") :
         s.status === "active"   ? "⚡ In progress" + (leader ? " · " + leader + " leading" : "") :
         "Upcoming";
 

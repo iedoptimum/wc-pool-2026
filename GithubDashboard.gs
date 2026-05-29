@@ -164,12 +164,16 @@ function doGet() {
   const knockoutBusterDone = resultsSheet
     ? String(resultsSheet.getRange("K141").getValue()).trim() !== ""
     : false;
+  const midTourneyDone = resultsSheet
+    ? String(resultsSheet.getRange("R129").getValue()).trim() !== ""
+    : false;
 
   const payload = {
     players,
     stageLeaders,
     groupStageDone,
     knockoutBusterDone,
+    midTourneyDone,
     lastUpdated: new Date().toISOString(),
   };
 
