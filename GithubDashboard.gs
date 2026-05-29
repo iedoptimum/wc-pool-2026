@@ -205,6 +205,12 @@ function doGet() {
     goldenBoot:  resultsSheet ? String(resultsSheet.getRange("B169").getValue()).trim() : "",
     goldenBall:  resultsSheet ? String(resultsSheet.getRange("B172").getValue()).trim() : "",
     goldenGlove: resultsSheet ? String(resultsSheet.getRange("B175").getValue()).trim() : "",
+    tournamentChampion: (function() {
+      if (!resultsSheet) return { team: "", flagUrl: "" };
+      const team = String(resultsSheet.getRange("L148").getValue()).trim();
+      const code = getCountryCode(team);
+      return { team, flagUrl: code ? "https://flagcdn.com/w80/" + code + ".png" : "" };
+    })(),
     lastUpdated: new Date().toISOString(),
   };
 

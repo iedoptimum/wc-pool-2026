@@ -188,6 +188,26 @@
       font-family:'DM Sans',sans-serif; cursor:pointer;
     }
 
+    /* ── CHAMPION BANNER ── */
+    .champion-banner {
+      margin:1rem 1rem 0;
+      background:linear-gradient(135deg, rgba(240,192,64,0.15) 0%, rgba(240,192,64,0.05) 100%);
+      border:1.5px solid rgba(240,192,64,0.5);
+      border-radius:14px;
+      padding:1.1rem 1rem;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      box-shadow:0 0 24px rgba(240,192,64,0.12);
+    }
+    .champion-trophy { font-size:44px; line-height:1; flex-shrink:0; filter:drop-shadow(0 0 8px rgba(240,192,64,0.6)); }
+    .champion-flag { width:52px; height:auto; border-radius:5px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.4); }
+    .champion-info { flex:1; min-width:0; }
+    .champion-label { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dim); font-weight:500; margin-bottom:3px; }
+    .champion-name { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--gold); line-height:1; letter-spacing:1px; }
+    .champion-sub { font-size:10px; color:var(--muted); margin-top:3px; }
+    .champion-tbd { color:var(--dim); font-style:italic; font-size:14px; }
+
     /* ── FOOTER ── */
     .footer { padding:1.5rem 1rem 2rem; text-align:center; }
     .footer-text { font-size:10px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; }
@@ -235,6 +255,16 @@
     <div class="state-title">Couldn't load data</div>
     <div class="state-sub">Check that the Apps Script is deployed and the URL is set correctly.</div>
     <button class="retry-btn" onclick="loadData()">Retry</button>
+  </div>
+
+  <div id="champion-banner" class="champion-banner" style="display:none;">
+    <div class="champion-trophy">🏆</div>
+    <img id="champion-flag" class="champion-flag" src="" alt="" style="display:none;" onerror="this.style.display='none'">
+    <div class="champion-info">
+      <div class="champion-label">2026 World Cup Champion</div>
+      <div class="champion-name" id="champion-name">TBD</div>
+      <div class="champion-sub">FIFA World Cup 2026</div>
+    </div>
   </div>
 
   <div id="leaderboard-rows" style="display:none;"></div>
@@ -362,7 +392,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove } = data;
+    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -399,6 +429,19 @@
     if (goldenBoot)  document.getElementById("award-golden-boot").textContent  = goldenBoot;
     if (goldenBall)  document.getElementById("award-golden-ball").textContent  = goldenBall;
     if (goldenGlove) document.getElementById("award-golden-glove").textContent = goldenGlove;
+
+    // Tournament champion banner
+    const banner = document.getElementById("champion-banner");
+    if (tournamentChampion?.team) {
+      document.getElementById("champion-name").textContent = tournamentChampion.team;
+      const flagEl = document.getElementById("champion-flag");
+      if (tournamentChampion.flagUrl) {
+        flagEl.src = tournamentChampion.flagUrl;
+        flagEl.alt = tournamentChampion.team;
+        flagEl.style.display = "block";
+      }
+      banner.style.display = "flex";
+    }
   }
 
   //---------------------------------
