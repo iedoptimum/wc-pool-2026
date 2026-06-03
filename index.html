@@ -142,8 +142,10 @@
     .payout-card.gold { border-color:rgba(240,192,64,0.3); background:rgba(240,192,64,0.05); }
     .payout-pct  { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--gold); line-height:1; }
     .payout-card.gold .payout-pct { font-size:36px; }
-    .payout-name { font-size:11px; color:var(--muted); margin-top:2px; font-weight:500; line-height:1.3; }
-    .payout-desc { font-size:10px; color:var(--dim); margin-top:4px; line-height:1.4; }
+    .payout-name   { font-size:11px; color:var(--muted); margin-top:2px; font-weight:500; line-height:1.3; }
+    .payout-desc   { font-size:10px; color:var(--dim); margin-top:4px; line-height:1.4; }
+    .payout-amount { font-size:10px; color:var(--gold-dim); font-weight:600; margin-top:3px; display:none; }
+    .payout-amount.visible { display:block; }
 
     /* ── POOL TOTAL CARD ── */
     .pool-total-card {
@@ -373,17 +375,18 @@
     <div class="payout-grid">
       <div class="payout-card gold">
         <div class="payout-pct">50%</div>
+        <div class="payout-amount" id="pay-grand"></div>
         <div class="payout-name">Grand Champion</div>
         <div class="payout-desc">Most points overall</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <div class="payout-card" style="flex:1;padding:9px 12px;"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">2nd Place Points</div></div>
-        <div class="payout-card" style="flex:1;padding:9px 12px;"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Group Stage King / Queen 👑</div></div>
+        <div class="payout-card" style="flex:1;padding:9px 12px;"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-amount" id="pay-2nd"></div><div class="payout-name">2nd Place Points</div></div>
+        <div class="payout-card" style="flex:1;padding:9px 12px;"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-amount" id="pay-group"></div><div class="payout-name">Group Stage King / Queen 👑</div></div>
       </div>
-      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Knockout Buster</div><div class="payout-desc">Most pts in R32 + R16</div></div>
-      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-name">Mid-Tournament</div><div class="payout-desc">Cumulative after QF</div></div>
-      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">Golden Awards</div><div class="payout-desc">Boot + Ball + Glove (Tie Braker - Least Global Pts) (No winner, goes to 2nd place)</div></div>
-      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins (Tie Braker - Least Global Pts) (No winner, goes to 2nd place)</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-amount" id="pay-knockout"></div><div class="payout-name">Knockout Buster</div><div class="payout-desc">Most pts in R32 + R16</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">10%</div><div class="payout-amount" id="pay-mid"></div><div class="payout-name">Mid-Tournament</div><div class="payout-desc">Cumulative after QF</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-amount" id="pay-golden"></div><div class="payout-name">Golden Awards</div><div class="payout-desc">Boot + Ball + Glove (Tie Braker - Least Global Pts) (No winner, goes to 2nd place)</div></div>
+      <div class="payout-card"><div class="payout-pct" style="font-size:20px;">5%</div><div class="payout-amount" id="pay-third"></div><div class="payout-name">3rd Place Pick</div><div class="payout-desc">Correct pick wins (Tie Braker - Least Global Pts) (No winner, goes to 2nd place)</div></div>
     </div>
   </div>
   <div class="section" style="margin-top:1rem;">
@@ -546,13 +549,31 @@
     STAGES[5].status = thirdPlaceDone   ? "done" : "upcoming";
     STAGES[6].status = grandChampionDone ? "done" : "upcoming";
 
-    // Pool total card
+    // Pool total card + payout amounts
     const ptCard = document.getElementById("pool-total-card");
+    const fmt = n => "$" + Math.round(n).toLocaleString();
+    const paySlots = [
+      ["pay-grand",   0.50],
+      ["pay-2nd",     0.10],
+      ["pay-group",   0.10],
+      ["pay-knockout",0.10],
+      ["pay-mid",     0.10],
+      ["pay-golden",  0.05],
+      ["pay-third",   0.05],
+    ];
     if (poolTotal > 0) {
       document.getElementById("pool-total-value").textContent = poolTotal.toLocaleString();
       ptCard.style.display = "flex";
+      paySlots.forEach(([id, pct]) => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = fmt(poolTotal * pct); el.classList.add("visible"); }
+      });
     } else {
       ptCard.style.display = "none";
+      paySlots.forEach(([id]) => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = ""; el.classList.remove("visible"); }
+      });
     }
 
     // Hero meta
