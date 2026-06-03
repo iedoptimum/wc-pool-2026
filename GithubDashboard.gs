@@ -20,7 +20,6 @@ const COUNTRY_FLAGS = {
   "Qatar":            "qa",
   "Switzerland":      "ch",
   "Bosnia & Hrzgvna": "ba",
-  "Bosnia":           "ba",
 
   // Group C
   "Brazil":           "br",
@@ -30,11 +29,9 @@ const COUNTRY_FLAGS = {
 
   // Group D
   "USA":              "us",
-  "United States":    "us",
   "Australia":        "au",
   "Paraguay":         "py",
   "Turkiye":          "tr",
-  "Turkey":           "tr",
 
   // Group E
   "Germany":          "de",
@@ -75,7 +72,6 @@ const COUNTRY_FLAGS = {
   // Group K
   "Portugal":         "pt",
   "Colombia":         "co",
-  "Columbia":         "co",
   "Uzbekistan":       "uz",
   "DR Congo":         "cd",
 
@@ -84,28 +80,6 @@ const COUNTRY_FLAGS = {
   "Croatia":          "hr",
   "Ghana":            "gh",
   "Panama":           "pa",
-
-  // Other qualified / path teams
-  "Serbia":           "rs",
-  "Denmark":          "dk",
-  "Poland":           "pl",
-  "Ukraine":          "ua",
-  "Cameroon":         "cm",
-  "Nigeria":          "ng",
-  "Mali":             "ml",
-  "Kenya":            "ke",
-  "Honduras":         "hn",
-  "Costa Rica":       "cr",
-  "Jamaica":          "jm",
-  "Venezuela":        "ve",
-  "Chile":            "cl",
-  "Peru":             "pe",
-  "Bolivia":          "bo",
-  "China":            "cn",
-  "Indonesia":        "id",
-  "Bahrain":          "bh",
-  "Kuwait":           "kw",
-  "Oman":             "om",
 };
 
 // ─────────────────────────────────────────────────────────────
