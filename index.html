@@ -227,6 +227,18 @@
     .champion-sub { font-size:10px; color:var(--muted); margin-top:3px; }
     .champion-tbd { color:var(--dim); font-style:italic; font-size:14px; }
 
+    /* ── REFRESH BUTTON ── */
+    .refresh-btn {
+      background: none; border: 1px solid rgba(240,192,64,0.3); border-radius: 20px;
+      color: var(--gold); font-size: 11px; font-weight: 500; padding: 3px 10px;
+      cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .refresh-btn:hover { background: rgba(240,192,64,0.1); border-color: rgba(240,192,64,0.6); }
+    .refresh-btn:active { opacity: 0.7; }
+    .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* ── FOOTER ── */
     .footer { padding:1.5rem 1rem 2rem; text-align:center; }
     .footer-text { font-size:10px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; }
@@ -245,6 +257,13 @@
   <div class="hero-meta">
     <span class="pill pill-live" id="status-pill">● Live</span>
     <span class="pill pill-players" id="player-count-pill">— Players</span>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadData(true)">
+      <svg id="refresh-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      Refresh
+    </button>
   </div>
   <div class="hero-updated" id="last-updated"></div>
 </div>
@@ -274,7 +293,7 @@
     <div class="state-icon">⚠️</div>
     <div class="state-title">Couldn't load data</div>
     <div class="state-sub">Check that the Apps Script is deployed and the URL is set correctly.</div>
-    <button class="retry-btn" onclick="loadData()">Retry</button>
+    <button class="retry-btn" onclick="loadData(true)">Retry</button>
   </div>
 
   <div id="champion-banner" class="champion-banner" style="display:none;">
@@ -384,7 +403,8 @@
   // 🔧 CONFIGURATION
   // Replace with your deployed Apps Script URL
   // ─────────────────────────────────────────
-  const SHEET_API = "https://script.google.com/macros/s/AKfycbwUjpj_ysTrF1Q0A8-O_NPGgeeRn8w4Z5kFNqHHhD_l6VcChfqY-sSoBw8gVewjdtjS2w/exec";
+  const SHEET_API  = "https://script.google.com/macros/s/AKfycbwUjpj_ysTrF1Q0A8-O_NPGgeeRn8w4Z5kFNqHHhD_l6VcChfqY-sSoBw8gVewjdtjS2w/exec";
+  const CACHE_KEY  = "wc26_pool_cache";
 
   // Static stage config — update status as tournament progresses
   const STAGES = [
@@ -403,19 +423,51 @@
   let chartInstance = null;
 
   // ─────────────────────────────────────────
-  // FETCH DATA
+  // FETCH DATA  (cache-first)
   // ─────────────────────────────────────────
-  async function loadData() {
+  async function loadData(forceRefresh = false) {
+    const btn  = document.getElementById("refresh-btn");
+    const icon = document.getElementById("refresh-icon");
+
+    // Serve from cache instantly when not forcing a refresh
+    if (!forceRefresh) {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data } = JSON.parse(cached);
+          renderAll(data);
+          showLoading(false);
+          return;
+        }
+      } catch(e) { /* corrupt cache — fall through to network */ }
+    }
+
+    // Network fetch (first load or manual refresh)
+    if (btn) btn.classList.add("spinning");
     showLoading(true);
     try {
       const res  = await fetch(SHEET_API);
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data, cachedAt: Date.now() })); } catch(e) {}
       renderAll(data);
       showLoading(false);
     } catch (err) {
       console.error("Failed to load leaderboard:", err);
+      // Fall back to stale cache if available
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data } = JSON.parse(cached);
+          renderAll(data);
+          showLoading(false);
+          document.getElementById("status-pill").textContent = "⚠ Cached";
+          return;
+        }
+      } catch(e) {}
       showError();
+    } finally {
+      if (btn) btn.classList.remove("spinning");
     }
   }
 
