@@ -182,9 +182,6 @@
     /* ── CHART ── */
     .chart-wrap { padding:1rem 1rem 0; }
     .chart-container { position:relative; width:100%; height:220px; }
-    .legend { display:flex; flex-wrap:wrap; gap:10px; padding:0.5rem 1rem 0; }
-    .leg-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); }
-    .leg-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
 
     /* ── GAP CARDS ── */
     .gap-card {
@@ -399,7 +396,6 @@
 <!--  TAB: CHART                                -->
 <!-- ══════════════════════════════════════════ -->
 <div id="tab-chart" class="tab-panel">
-  <div id="legend" class="legend"></div>
   <div class="chart-wrap">
     <div class="chart-container">
       <canvas id="pointsChart" role="img" aria-label="Bar chart of player points in the Club World Cup 2025 pool">Points data loading.</canvas>
@@ -734,14 +730,6 @@
   // ─────────────────────────────────────────
   function renderChart(players) {
     const colors  = players.map((_, i) => BAR_COLORS[i] || BAR_DEFAULT);
-    const legend  = document.getElementById("legend");
-    legend.innerHTML = "";
-    players.forEach((p, i) => {
-      const item = document.createElement("div");
-      item.className = "leg-item";
-      item.innerHTML = `<span class="leg-swatch" style="background:${colors[i]}"></span>${p.name} · ${p.points}`;
-      legend.appendChild(item);
-    });
 
     if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 
