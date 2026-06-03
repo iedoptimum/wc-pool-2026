@@ -227,6 +227,92 @@
     .champion-sub { font-size:10px; color:var(--muted); margin-top:3px; }
     .champion-tbd { color:var(--dim); font-style:italic; font-size:14px; }
 
+    /* ── POOL WINNER BANNER ── */
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-4px); }
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(240,192,64,0.25), 0 0 60px rgba(240,192,64,0.08); }
+      50%       { box-shadow: 0 0 32px rgba(240,192,64,0.45), 0 0 80px rgba(240,192,64,0.18); }
+    }
+    .pool-winner-banner {
+      margin: 1rem 1rem 0;
+      background: linear-gradient(135deg, #1A2010 0%, #0F1A08 40%, #1A1A08 100%);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 1.4rem 1rem 1.2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: glow-pulse 2.8s ease-in-out infinite;
+    }
+    .pool-winner-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(240,192,64,0.07) 50%, transparent 70%);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+      pointer-events: none;
+    }
+    .pool-winner-stars {
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: var(--gold-dim);
+      margin-bottom: 4px;
+    }
+    .pool-winner-eyebrow {
+      font-size: 9px;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .pool-winner-trophies {
+      font-size: 36px;
+      line-height: 1;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 0 10px rgba(240,192,64,0.7));
+      animation: float 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    .pool-winner-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #B8922A 0%, #F0C040 40%, #FFE680 60%, #F0C040 80%, #B8922A 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+      margin-bottom: 4px;
+    }
+    .pool-winner-pts {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .pool-winner-pts strong { color: var(--gold); font-size: 14px; }
+    .pool-winner-flag-row {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 11px; color: var(--muted);
+    }
+    .pool-winner-flag-row img { width: 24px; height: auto; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+    .pool-winner-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(240,192,64,0.3), transparent);
+      margin: 10px 0;
+    }
+
     /* ── REFRESH BUTTON ── */
     .refresh-btn {
       background: none; border: 1px solid rgba(240,192,64,0.3); border-radius: 20px;
@@ -303,6 +389,18 @@
       <div class="champion-label">2026 World Cup Champion</div>
       <div class="champion-name" id="champion-name">TBD</div>
       <div class="champion-sub">FIFA World Cup 2026</div>
+    </div>
+  </div>
+
+  <div id="pool-winner-banner" style="display:none;">
+    <div class="pool-winner-banner">
+      <div class="pool-winner-stars">★ ★ ★ ★ ★</div>
+      <div class="pool-winner-eyebrow">🏅 Pool Grand Champion 🏅</div>
+      <div class="pool-winner-trophies">🏆</div>
+      <div class="pool-winner-name" id="pool-winner-name"></div>
+      <div class="pool-winner-pts" id="pool-winner-pts"></div>
+      <div class="pool-winner-divider"></div>
+      <div class="pool-winner-flag-row" id="pool-winner-flag-row"></div>
     </div>
   </div>
 
@@ -533,6 +631,26 @@
     document.getElementById("award-golden-boot").textContent  = goldenBoot  || "TBD";
     document.getElementById("award-golden-ball").textContent  = goldenBall  || "TBD";
     document.getElementById("award-golden-glove").textContent = goldenGlove || "TBD";
+
+    // Pool winner banner (shown when grandChampionDone — B175 has a value)
+    const poolWinnerEl = document.getElementById("pool-winner-banner");
+    if (grandChampionDone && players.length > 0) {
+      const winner = players[0];
+      document.getElementById("pool-winner-name").textContent = winner.name;
+      document.getElementById("pool-winner-pts").innerHTML =
+        `<strong>${winner.points}</strong> points`;
+      const flagRow = document.getElementById("pool-winner-flag-row");
+      if (winner.champion) {
+        flagRow.innerHTML = winner.flagUrl
+          ? `<img src="${winner.flagUrl}" alt="${winner.champion}"> Picked ${winner.champion}`
+          : `Picked ${winner.champion}`;
+      } else {
+        flagRow.innerHTML = "";
+      }
+      poolWinnerEl.style.display = "block";
+    } else {
+      poolWinnerEl.style.display = "none";
+    }
 
     // Tournament champion banner
     const banner = document.getElementById("champion-banner");
