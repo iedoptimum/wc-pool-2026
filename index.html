@@ -446,7 +446,9 @@
     if (btn) btn.classList.add("spinning");
     showLoading(true);
     try {
-      const res  = await fetch(SHEET_API);
+      // Append timestamp to bust Google's CDN/Apps Script response cache
+      const url = SHEET_API + "?_cb=" + Date.now();
+      const res  = await fetch(url, { cache: "no-store" });
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ data, cachedAt: Date.now() })); } catch(e) {}
