@@ -192,9 +192,12 @@ function doGet() {
     ? String(resultsSheet.getRange("B175").getValue()).trim() !== ""
     : false;
 
+  const poolTotal = Number(lb.getRange("Q3").getValue()) || 0;
+
   const payload = {
     players,
     stageLeaders,
+    poolTotal,
     groupStageDone,
     knockoutBusterDone,
     midTourneyDone,

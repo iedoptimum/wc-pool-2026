@@ -145,6 +145,28 @@
     .payout-name { font-size:11px; color:var(--muted); margin-top:2px; font-weight:500; line-height:1.3; }
     .payout-desc { font-size:10px; color:var(--dim); margin-top:4px; line-height:1.4; }
 
+    /* ── POOL TOTAL CARD ── */
+    .pool-total-card {
+      margin: 1rem 1rem 0;
+      background: linear-gradient(135deg, rgba(240,192,64,0.10) 0%, rgba(240,192,64,0.04) 100%);
+      border: 1.5px solid rgba(240,192,64,0.4);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .pool-total-left { display:flex; align-items:center; gap:10px; }
+    .pool-total-icon { font-size: 26px; line-height:1; flex-shrink:0; }
+    .pool-total-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-dim); font-weight: 600; }
+    .pool-total-sub   { font-size: 10px; color: var(--dim); margin-top: 2px; }
+    .pool-total-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px; line-height: 1;
+      color: var(--gold);
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .pool-total-amount .pool-currency { font-size: 18px; color: var(--gold-dim); vertical-align: top; line-height: 1.4; margin-right: 1px; }
+
     /* ── STAGE ROWS ── */
     .stage-row { display:flex; align-items:center; gap:10px; padding:10px 1rem; border-bottom:1px solid rgba(255,255,255,0.04); }
     .stage-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
@@ -335,6 +357,17 @@
 <!--  TAB: STAGES                               -->
 <!-- ══════════════════════════════════════════ -->
 <div id="tab-stages" class="tab-panel">
+  <div id="pool-total-card" class="pool-total-card" style="display:none;">
+    <div class="pool-total-left">
+      <div class="pool-total-icon">💰</div>
+      <div>
+        <div class="pool-total-label">Current Pool</div>
+        <div class="pool-total-sub">Total prize pot</div>
+      </div>
+    </div>
+    <div class="pool-total-amount"><span class="pool-currency">$</span><span id="pool-total-value">0</span></div>
+  </div>
+
   <div class="section" style="padding-top:1rem;">
     <div class="section-label">Payout structure</div>
     <div class="payout-grid">
@@ -504,7 +537,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, lastUpdated, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
+    const { players, stageLeaders, lastUpdated, poolTotal, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -512,6 +545,15 @@
     STAGES[4].status = grandChampionDone  ? "done" : "active";
     STAGES[5].status = thirdPlaceDone   ? "done" : "upcoming";
     STAGES[6].status = grandChampionDone ? "done" : "upcoming";
+
+    // Pool total card
+    const ptCard = document.getElementById("pool-total-card");
+    if (poolTotal > 0) {
+      document.getElementById("pool-total-value").textContent = poolTotal.toLocaleString();
+      ptCard.style.display = "flex";
+    } else {
+      ptCard.style.display = "none";
+    }
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
