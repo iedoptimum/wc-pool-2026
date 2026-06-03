@@ -218,13 +218,17 @@
       text-align:right; white-space:nowrap;
     }
     .players-table th:first-child,
-    .players-table th:nth-child(2) { text-align:left; }
+    .players-table th:nth-child(2),
+    .players-table th:nth-child(3) { text-align:left; }
     .players-table td {
       padding:7px 6px; border-bottom:1px solid rgba(255,255,255,0.04);
       color:var(--bright); text-align:right; white-space:nowrap;
     }
     .players-table td:first-child { color:var(--dim); font-size:11px; }
     .players-table td:nth-child(2) { text-align:left; font-weight:500; }
+    .players-table td:nth-child(3) { text-align:left; }
+    .players-table .brkt-link { font-size:10px; color:var(--blue); text-decoration:none; font-weight:500; }
+    .players-table .brkt-link:hover { text-decoration:underline; }
     .players-table tr:last-child td { border-bottom:none; }
     .players-table .pt-total { font-family:'Bebas Neue',sans-serif; font-size:15px; color:var(--gold); }
 
@@ -419,6 +423,7 @@
           <tr>
             <th>#</th>
             <th>Name</th>
+            <th>Brkt</th>
             <th>Total</th>
             <th>Group</th>
             <th>Knockout</th>
@@ -809,6 +814,7 @@
       tr.innerHTML = `
         <td>${i + 1}</td>
         <td>${p.name}</td>
+        <td>${p.bracketUrl ? `<a class="brkt-link" href="${p.bracketUrl}" target="_blank" rel="noopener">view</a>` : ""}</td>
         <td class="pt-total">${p.points}</td>
         <td>${p.groupPts || 0}</td>
         <td>${p.knockoutPts || 0}</td>

@@ -117,9 +117,9 @@ function doGet() {
   const lb = ss.getSheetByName("Leaderboard");
 
   // Player List: F=Name, G=TotalPoints, H=CountryFlag,
-  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts
+  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL
   const lastRow   = lb.getLastRow();
-  const dataRange = lb.getRange(4, 6, lastRow - 3, 8); // F4:M(lastRow)
+  const dataRange = lb.getRange(4, 6, lastRow - 3, 9); // F4:N(lastRow)
   const rows      = dataRange.getValues();
 
   const players = rows
@@ -146,6 +146,7 @@ function doGet() {
         midPts:          Number(r[5]),
         thirdPlacePts:   Number(r[6]),
         goldenAwardsPts: Number(r[7]),
+        bracketUrl:      String(r[8] || "").trim(),
       };
     })
     .sort((a, b) => b.points - a.points);
