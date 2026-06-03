@@ -496,8 +496,8 @@
     STAGES[2].status = midTourneyDone     ? "done" : "active";
     STAGES[3].status = grandChampionDone  ? "done" : "active";
     STAGES[4].status = grandChampionDone  ? "done" : "active";
-    if (thirdPlaceDone)   STAGES[5].status = "done";
-    if (grandChampionDone) STAGES[6].status = "done";
+    STAGES[5].status = thirdPlaceDone   ? "done" : "upcoming";
+    STAGES[6].status = grandChampionDone ? "done" : "upcoming";
 
     // Hero meta
     document.getElementById("player-count-pill").textContent =
@@ -518,17 +518,19 @@
     renderAllPlayers(players);
 
     // 3rd Place award card
+    const thirdHolder = document.getElementById("award-third-place-holder");
     if (thirdPlaceTeam) {
-      const holder = document.getElementById("award-third-place-holder");
-      holder.innerHTML = thirdPlaceTeamFlag
+      thirdHolder.innerHTML = thirdPlaceTeamFlag
         ? `<img src="${thirdPlaceTeamFlag}" alt="${thirdPlaceTeam}" style="width:24px;height:auto;border-radius:3px;vertical-align:middle;margin-right:5px;" onerror="this.style.display='none'">${thirdPlaceTeam}`
         : thirdPlaceTeam;
+    } else {
+      thirdHolder.textContent = "TBD";
     }
 
     // Golden awards
-    if (goldenBoot)  document.getElementById("award-golden-boot").textContent  = goldenBoot;
-    if (goldenBall)  document.getElementById("award-golden-ball").textContent  = goldenBall;
-    if (goldenGlove) document.getElementById("award-golden-glove").textContent = goldenGlove;
+    document.getElementById("award-golden-boot").textContent  = goldenBoot  || "TBD";
+    document.getElementById("award-golden-ball").textContent  = goldenBall  || "TBD";
+    document.getElementById("award-golden-glove").textContent = goldenGlove || "TBD";
 
     // Tournament champion banner
     const banner = document.getElementById("champion-banner");
@@ -539,8 +541,12 @@
         flagEl.src = tournamentChampion.flagUrl;
         flagEl.alt = tournamentChampion.team;
         flagEl.style.display = "block";
+      } else {
+        flagEl.style.display = "none";
       }
       banner.style.display = "flex";
+    } else {
+      banner.style.display = "none";
     }
   }
 
