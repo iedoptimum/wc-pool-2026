@@ -167,7 +167,8 @@ function doGet() {
     ? String(resultsSheet.getRange("B175").getValue()).trim() !== ""
     : false;
 
-  const poolTotal = Number(lb.getRange("Q3").getValue()) || 0;
+  const poolTotal    = Number(lb.getRange("Q3").getValue()) || 0;
+  const masterKeyUrl = String(lb.getRange("P10").getValue()).trim();
 
   // P7 = date, Q7 = time — format using the sheet's own timezone to avoid UTC shift
   let dataUpdatedAt = "";
@@ -186,6 +187,7 @@ function doGet() {
     players,
     stageLeaders,
     poolTotal,
+    masterKeyUrl,
     dataUpdatedAt,
     groupStageDone,
     knockoutBusterDone,

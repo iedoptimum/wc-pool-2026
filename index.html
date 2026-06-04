@@ -399,7 +399,13 @@
 <!--  TAB: ALL PLAYERS                          -->
 <!-- ══════════════════════════════════════════ -->
 <div id="tab-players" class="tab-panel">
-  <div class="section" style="padding-top:1rem;padding-bottom:1rem;">
+  <div id="master-key-row" class="section" style="padding-top:1rem;padding-bottom:0;display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+      <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-weight:500;">Master Tournament Key</span>
+      <a id="master-key-link" href="#" target="_blank" rel="noopener" style="font-size:11px;color:var(--blue);font-weight:500;text-decoration:none;">view</a>
+    </div>
+  </div>
+  <div class="section" style="padding-top:0.5rem;padding-bottom:1rem;">
     <div class="section-label">All Players</div>
     <div style="overflow-x:auto;">
       <table class="players-table">
@@ -511,7 +517,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, dataUpdatedAt, poolTotal, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
+    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -545,6 +551,16 @@
         const el = document.getElementById(id);
         if (el) { el.textContent = ""; el.classList.remove("visible"); }
       });
+    }
+
+    // Master Tournament Key link
+    const mkRow  = document.getElementById("master-key-row");
+    const mkLink = document.getElementById("master-key-link");
+    if (masterKeyUrl) {
+      mkLink.href = masterKeyUrl;
+      mkRow.style.display = "block";
+    } else {
+      mkRow.style.display = "none";
     }
 
     // Hero meta
