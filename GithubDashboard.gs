@@ -169,17 +169,16 @@ function doGet() {
 
   const poolTotal = Number(lb.getRange("Q3").getValue()) || 0;
 
-  // P7 = date, Q7 = time — combine into a single ISO timestamp
+  // P7 = date, Q7 = time — format using the sheet's own timezone to avoid UTC shift
   let dataUpdatedAt = "";
   try {
     const dateVal = lb.getRange("P7").getValue();
     const timeVal = lb.getRange("Q7").getValue();
     if (dateVal instanceof Date && timeVal instanceof Date) {
-      const combined = new Date(
-        dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate(),
-        timeVal.getHours(), timeVal.getMinutes(), timeVal.getSeconds()
-      );
-      dataUpdatedAt = combined.toISOString();
+      const tz = ss.getSpreadsheetTimeZone();
+      const datePart = Utilities.formatDate(dateVal, tz, "M/d/yyyy");
+      const timePart = Utilities.formatDate(timeVal, tz, "h:mm a");
+      dataUpdatedAt = datePart + " " + timePart;
     }
   } catch(e) {}
 

@@ -552,10 +552,7 @@
       players.length + " Player" + (players.length !== 1 ? "s" : "");
 
     if (dataUpdatedAt) {
-      const d = new Date(dataUpdatedAt);
-      document.getElementById("last-updated").textContent =
-        "Data updated " + d.toLocaleDateString() + " " +
-        d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+      document.getElementById("last-updated").textContent = "Data updated " + dataUpdatedAt;
     }
 
     const top7 = players.slice(0, 7);
