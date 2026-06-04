@@ -169,10 +169,25 @@ function doGet() {
 
   const poolTotal = Number(lb.getRange("Q3").getValue()) || 0;
 
+  // P7 = date, Q7 = time — combine into a single ISO timestamp
+  let dataUpdatedAt = "";
+  try {
+    const dateVal = lb.getRange("P7").getValue();
+    const timeVal = lb.getRange("Q7").getValue();
+    if (dateVal instanceof Date && timeVal instanceof Date) {
+      const combined = new Date(
+        dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate(),
+        timeVal.getHours(), timeVal.getMinutes(), timeVal.getSeconds()
+      );
+      dataUpdatedAt = combined.toISOString();
+    }
+  } catch(e) {}
+
   const payload = {
     players,
     stageLeaders,
     poolTotal,
+    dataUpdatedAt,
     groupStageDone,
     knockoutBusterDone,
     midTourneyDone,
