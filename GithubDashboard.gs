@@ -170,6 +170,20 @@ function doGet() {
   const poolTotal    = Number(lb.getRange("Q3").getValue()) || 0;
   const masterKeyUrl = String(lb.getRange("P10").getValue()).trim();
 
+  // Temp player list (S=Name, T=FlagIcon, U=Status) — active when S4 has a value
+  const useTempList = String(lb.getRange("S4").getValue()).trim() !== "";
+  let tempPlayers = [];
+  if (useTempList) {
+    const tempRows = lb.getRange(4, 19, lastRow - 3, 3).getValues(); // S4:U(lastRow)
+    tempPlayers = tempRows
+      .filter(r => String(r[0]).trim() !== "")
+      .map(r => ({
+        name:     String(r[0]).trim(),
+        flagIcon: String(r[1]).trim(),
+        status:   String(r[2]).trim(),
+      }));
+  }
+
   // P7 = date, Q7 = time — format using the sheet's own timezone to avoid UTC shift
   let dataUpdatedAt = "";
   try {
@@ -188,6 +202,8 @@ function doGet() {
     stageLeaders,
     poolTotal,
     masterKeyUrl,
+    useTempList,
+    tempPlayers,
     dataUpdatedAt,
     groupStageDone,
     knockoutBusterDone,
