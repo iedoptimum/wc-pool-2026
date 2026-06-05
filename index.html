@@ -264,6 +264,24 @@
     .gc-badge-stars { font-size: 10px; color: var(--gold); letter-spacing: 4px; line-height: 1; }
     .gc-badge-text  { font-size: 9px; font-weight: 600; color: var(--gold); letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap; line-height: 1.3; }
 
+    /* ── SIGNED UP TAB ── */
+    .signup-row {
+      display:flex; align-items:center; gap:10px;
+      padding:11px 1rem; border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .signup-flag-circle {
+      width:38px; height:38px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; background:var(--navy3); border:2px solid rgba(255,255,255,0.1);
+    }
+    .signup-name { font-size:14px; font-weight:500; color:var(--bright); flex:1; min-width:0; }
+    .signup-num  { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--dim); min-width:22px; text-align:center; }
+    .signup-status-badge {
+      font-size:10px; font-weight:600; padding:3px 9px; border-radius:20px;
+      background:rgba(52,201,122,0.15); color:var(--green); border:1px solid rgba(52,201,122,0.3);
+      white-space:nowrap; text-transform:uppercase; letter-spacing:0.5px;
+    }
+
     /* ── FOOTER ── (spin kept for potential reuse) */
     @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -293,10 +311,21 @@
 <!--  TABS                                      -->
 <!-- ══════════════════════════════════════════ -->
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('standings')">Standings</button>
-  <button class="tab"        onclick="switchTab('stages')">Stages</button>
-  <button class="tab"        onclick="switchTab('chart')">Points</button>
-  <button class="tab"        onclick="switchTab('players')">All Players</button>
+  <button class="tab" id="tab-btn-signup" data-tab="signup"    onclick="switchTab('signup')"    style="display:none;">Signed Up</button>
+  <button class="tab active"              data-tab="standings" onclick="switchTab('standings')">Standings</button>
+  <button class="tab"                     data-tab="stages"    onclick="switchTab('stages')">Stages</button>
+  <button class="tab"                     data-tab="chart"     onclick="switchTab('chart')">Points</button>
+  <button class="tab"                     data-tab="players"   onclick="switchTab('players')">All Players</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  TAB: SIGNED UP                            -->
+<!-- ══════════════════════════════════════════ -->
+<div id="tab-signup" class="tab-panel">
+  <div class="section" style="padding-top:1rem;">
+    <div class="section-label">Players Signed Up</div>
+  </div>
+  <div id="signup-rows"></div>
 </div>
 
 <!-- ══════════════════════════════════════════ -->
@@ -521,7 +550,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
+    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion, hasTempPlayers, tempPlayers } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -612,6 +641,27 @@
       banner.style.display = "flex";
     } else {
       banner.style.display = "none";
+    }
+
+    // Signed Up tab — show/hide based on S4
+    const signupBtn = document.getElementById("tab-btn-signup");
+    const hasTmp = !!hasTempPlayers;
+    signupBtn.style.display = hasTmp ? "" : "none";
+    renderSignedUp(tempPlayers || []);
+
+    // Override player count pill with temp list count when in pre-tournament mode
+    if (hasTmp && tempPlayers?.length > 0) {
+      document.getElementById("player-count-pill").textContent =
+        tempPlayers.length + " Player" + (tempPlayers.length !== 1 ? "s" : "");
+    }
+
+    // Auto-select default tab on first render only
+    if (!defaultTabSet) {
+      activateTab(hasTmp ? "signup" : "standings");
+      defaultTabSet = true;
+    } else if (!hasTmp && document.getElementById("tab-signup").classList.contains("active")) {
+      // Tournament started — move away from signup tab if still on it
+      activateTab("standings");
     }
   }
 
@@ -812,13 +862,43 @@
     });
   }
 
-  function switchTab(name) {
-    const names = ["standings","stages","chart","players"];
-    document.querySelectorAll(".tab").forEach((t, i) => {
-      t.classList.toggle("active", names[i] === name);
+  // ─────────────────────────────────────────
+  // SIGNED UP LIST
+  // ─────────────────────────────────────────
+  function renderSignedUp(tempPlayers) {
+    const container = document.getElementById("signup-rows");
+    container.innerHTML = "";
+    if (!tempPlayers.length) return;
+    tempPlayers.forEach((p, i) => {
+      const flagHtml = p.flagUrl
+        ? `<img src="${p.flagUrl}" alt="flag" style="width:28px;height:auto;border-radius:3px;" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=font-size:18px>❓</span>')">`
+        : `<span style="font-size:20px">❓</span>`;
+      const row = document.createElement("div");
+      row.className = "signup-row";
+      row.innerHTML = `
+        <div class="signup-num">${i + 1}</div>
+        <div class="signup-flag-circle">${flagHtml}</div>
+        <div class="signup-name">${p.name}</div>
+        ${p.status ? `<div class="signup-status-badge">${p.status}</div>` : ""}`;
+      container.appendChild(row);
+    });
+  }
+
+  // ─────────────────────────────────────────
+  // TAB SWITCHER
+  // ─────────────────────────────────────────
+  let defaultTabSet = false;
+
+  function activateTab(name) {
+    document.querySelectorAll(".tab").forEach(t => {
+      t.classList.toggle("active", t.dataset.tab === name);
     });
     document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
     document.getElementById("tab-" + name).classList.add("active");
+  }
+
+  function switchTab(name) {
+    activateTab(name);
   }
 
   // ─────────────────────────────────────────
