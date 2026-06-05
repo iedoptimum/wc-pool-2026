@@ -96,42 +96,34 @@ function doGet() {
   const dataRange = lb.getRange(4, 6, lastRow - 3, 9); // F4:N(lastRow)
   const rows      = dataRange.getValues();
 
-  const mapPlayer = r => {
-    const playerName   = String(r[0]);
-    const championName = getChampionName(ss, playerName);
-    const countryCode  = getCountryCode(championName);
-    const flagUrl      = countryCode
-      ? "https://flagcdn.com/w40/" + countryCode + ".png"
-      : "";
-    writeToLeaderboard(lb, rows, playerName, flagUrl);
-    return {
-      name:            playerName,
-      points:          Number(r[1]),
-      champion:        championName,
-      countryCode:     countryCode,
-      flagUrl:         flagUrl,
-      groupPts:        Number(r[3]),
-      knockoutPts:     Number(r[4]),
-      midPts:          Number(r[5]),
-      thirdPlacePts:   Number(r[6]),
-      goldenAwardsPts: Number(r[7]),
-      bracketUrl:      String(r[8] || "").trim(),
-    };
-  };
+  const players = rows
+    .filter(r => r[0] !== "" && Number(r[1]) > 0)  // skip blanks and zeros
+    .map(r => {
+      const playerName   = String(r[0]);
+      const championName = getChampionName(ss, playerName);  // L148 of player sheet
+      const countryCode  = getCountryCode(championName);     // flagcdn.com code
+      const flagUrl      = countryCode
+        ? "https://flagcdn.com/w40/" + countryCode + ".png"
+        : "";
 
-  // Primary list: players with points > 0 (during tournament)
-  let players = rows
-    .filter(r => r[0] !== "" && Number(r[1]) > 0)
-    .map(mapPlayer)
+      // Write flag URL back to Leaderboard col H so sheet stays in sync
+      writeToLeaderboard(lb, rows, playerName, flagUrl);
+
+      return {
+        name:          playerName,
+        points:        Number(r[1]),
+        champion:      championName,
+        countryCode:   countryCode,
+        flagUrl:       flagUrl,
+        groupPts:        Number(r[3]),
+        knockoutPts:     Number(r[4]),
+        midPts:          Number(r[5]),
+        thirdPlacePts:   Number(r[6]),
+        goldenAwardsPts: Number(r[7]),
+        bracketUrl:      String(r[8] || "").trim(),
+      };
+    })
     .sort((a, b) => b.points - a.points);
-
-  // Fallback: if no one has points yet (tournament just started / S4 cleared early),
-  // show all named players so the list is never empty
-  if (players.length === 0 && !useTempList) {
-    players = rows
-      .filter(r => r[0] !== "")
-      .map(mapPlayer);
-  }
 
   // Stage leaders
   // 3rd Place Pick winner: any player with thirdPlacePts === 5;
@@ -178,20 +170,6 @@ function doGet() {
   const poolTotal    = Number(lb.getRange("Q3").getValue()) || 0;
   const masterKeyUrl = String(lb.getRange("P10").getValue()).trim();
 
-  // Temp player list (S=Name, T=FlagIcon, U=Status) — active when S4 has a value
-  const useTempList = String(lb.getRange("S4").getValue()).trim() !== "";
-  let tempPlayers = [];
-  if (useTempList) {
-    const tempRows = lb.getRange(4, 19, lastRow - 3, 3).getValues(); // S4:U(lastRow)
-    tempPlayers = tempRows
-      .filter(r => String(r[0]).trim() !== "")
-      .map(r => ({
-        name:     String(r[0]).trim(),
-        flagIcon: String(r[1]).trim(),
-        status:   String(r[2]).trim(),
-      }));
-  }
-
   // P7 = date, Q7 = time — format using the sheet's own timezone to avoid UTC shift
   let dataUpdatedAt = "";
   try {
@@ -210,8 +188,6 @@ function doGet() {
     stageLeaders,
     poolTotal,
     masterKeyUrl,
-    useTempList,
-    tempPlayers,
     dataUpdatedAt,
     groupStageDone,
     knockoutBusterDone,

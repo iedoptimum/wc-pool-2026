@@ -252,15 +252,6 @@
     .champion-sub { font-size:10px; color:var(--muted); margin-top:3px; }
     .champion-tbd { color:var(--dim); font-style:italic; font-size:14px; }
 
-    /* ── PRE-TOURNAMENT STATUS BADGE ── */
-    .status-badge {
-      font-size: 10px; font-weight: 600; padding: 3px 8px;
-      border-radius: 20px; white-space: nowrap; flex-shrink: 0;
-    }
-    .status-confirmed { background: rgba(52,201,122,0.15); color: var(--green); border: 1px solid rgba(52,201,122,0.3); }
-    .status-pending   { background: rgba(240,192,64,0.12); color: var(--gold);  border: 1px solid rgba(240,192,64,0.25); }
-    .status-other     { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid rgba(255,255,255,0.1); }
-
     /* ── GRAND CHAMPION BADGE (rank-1 row) ── */
     .gc-badge {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -530,7 +521,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, useTempList, tempPlayers = [], groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
+    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -577,22 +568,19 @@
     }
 
     // Hero meta
-    const displayCount = useTempList ? tempPlayers.length : players.length;
     document.getElementById("player-count-pill").textContent =
-      displayCount + " Player" + (displayCount !== 1 ? "s" : "");
+      players.length + " Player" + (players.length !== 1 ? "s" : "");
 
     if (dataUpdatedAt) {
       document.getElementById("last-updated").textContent = "Data updated " + dataUpdatedAt;
     }
 
     const top7 = players.slice(0, 7);
-    renderLeaderboard(top7, grandChampionDone, useTempList, tempPlayers);
+    renderLeaderboard(top7, grandChampionDone);
     renderStages(STAGES, stageLeaders);
-    if (!useTempList) {
-      renderChart(top7);
-      renderGaps(top7);
-    }
-    renderAllPlayers(players, useTempList, tempPlayers);
+    renderChart(top7);
+    renderGaps(top7);
+    renderAllPlayers(players);
 
     // 3rd Place award card
     const thirdHolder = document.getElementById("award-third-place-holder");
@@ -657,29 +645,11 @@
   // ─────────────────────────────────────────
   // LEADERBOARD
   // ─────────────────────────────────────────
-  function renderLeaderboard(players, grandChampionDone, useTempList, tempPlayers) {
+  function renderLeaderboard(players, grandChampionDone) {
     const container = document.getElementById("leaderboard-rows");
     container.innerHTML = "";
-
-    if (useTempList) {
-      tempPlayers.forEach((p, i) => {
-        const sc = p.status.toLowerCase();
-        const badgeClass = sc === "confirmed" ? "status-confirmed" : sc === "pending" ? "status-pending" : "status-other";
-        const row = document.createElement("div");
-        row.className = "lb-row";
-        row.innerHTML = `
-          <div class="lb-rank">${i + 1}</div>
-          <div class="lb-flag-circle" style="font-size:20px;">${p.flagIcon || "🏳"}</div>
-          <div class="lb-info">
-            <div class="lb-name">${p.name}</div>
-          </div>
-          <div class="status-badge ${badgeClass}">${p.status}</div>`;
-        container.appendChild(row);
-      });
-      return;
-    }
-
     const maxPts = players[0]?.points || 1;
+
     players.forEach((p, i) => {
       const rankClass = i === 0 ? "rank-1" : i === 1 ? "rank-2" : i === 2 ? "rank-3" : "";
       const barWidth  = Math.round((p.points / maxPts) * 100);
@@ -823,28 +793,9 @@
   // ─────────────────────────────────────────
   // ALL PLAYERS TABLE
   // ─────────────────────────────────────────
-  function renderAllPlayers(players, useTempList, tempPlayers) {
-    const tbody  = document.getElementById("players-table-body");
-    const thead  = document.querySelector(".players-table thead tr");
+  function renderAllPlayers(players) {
+    const tbody = document.getElementById("players-table-body");
     tbody.innerHTML = "";
-
-    if (useTempList) {
-      thead.innerHTML = `<th>#</th><th>Name</th><th>Flag</th><th>Status</th>`;
-      tempPlayers.forEach((p, i) => {
-        const sc = p.status.toLowerCase();
-        const badgeClass = sc === "confirmed" ? "status-confirmed" : sc === "pending" ? "status-pending" : "status-other";
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${p.name}</td>
-          <td style="text-align:center;font-size:18px;">${p.flagIcon || ""}</td>
-          <td style="text-align:left;"><span class="status-badge ${badgeClass}">${p.status}</span></td>`;
-        tbody.appendChild(tr);
-      });
-      return;
-    }
-
-    thead.innerHTML = `<th>#</th><th>Name</th><th>Brkt</th><th>Total</th><th>Group</th><th>Knockout</th><th>Mid</th><th>3rd Pick</th><th>Golden</th>`;
     players.forEach((p, i) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
