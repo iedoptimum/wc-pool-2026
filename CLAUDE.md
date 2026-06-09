@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Calendar generator
+@calendar-games/calendar-wc26-games.md
+
 ## Project Overview
 
 A mobile-first FIFA World Cup 2026 pool leaderboard dashboard. Players predict match results in a Google Sheet; scores are served via a Google Apps Script Web App and displayed in a single-page HTML dashboard.
