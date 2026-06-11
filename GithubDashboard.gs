@@ -169,6 +169,7 @@ function doGet() {
 
   const poolTotal    = Number(lb.getRange("Q3").getValue()) || 0;
   const masterKeyUrl = String(lb.getRange("P10").getValue()).trim();
+  const auditUrl     = String(lb.getRange("P13").getValue()).trim();
 
   // Temp player list: S4=Name, T4=FlagUrl, U4=Status (pre-tournament sign-up)
   const s4Val = String(lb.getRange(4, 19).getValue()).trim();
@@ -203,6 +204,7 @@ function doGet() {
     stageLeaders,
     poolTotal,
     masterKeyUrl,
+    auditUrl,
     dataUpdatedAt,
     hasTempPlayers,
     tempPlayers,

@@ -459,6 +459,13 @@
       </table>
     </div>
   </div>
+  <div id="audit-link-row" style="display:none;text-align:center;padding:0.1rem 1rem 0.8rem;">
+    <a id="audit-link" href="#" target="_blank" rel="noopener"
+       style="font-size:10px;color:rgba(255,255,255,0.28);text-decoration:none;line-height:1.6;">
+      Auditing
+    </a>
+    <span style="font-size:10px;color:rgba(255,255,255,0.18);"> — if you would like to see all player bracket printouts with date and time before tournament started</span>
+  </div>
 </div>
 
 <div class="footer">
@@ -550,7 +557,7 @@
   // RENDER ALL
   // ─────────────────────────────────────────
   function renderAll(data) {
-    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion, hasTempPlayers, tempPlayers } = data;
+    const { players, stageLeaders, dataUpdatedAt, poolTotal, masterKeyUrl, auditUrl, groupStageDone, knockoutBusterDone, midTourneyDone, grandChampionDone, thirdPlaceDone, thirdPlaceTeam, thirdPlaceTeamFlag, goldenBoot, goldenBall, goldenGlove, tournamentChampion, hasTempPlayers, tempPlayers } = data;
     STAGES[0].status = groupStageDone     ? "done" : "active";
     STAGES[1].status = knockoutBusterDone ? "done" : "active";
     STAGES[2].status = midTourneyDone     ? "done" : "active";
@@ -594,6 +601,16 @@
       mkRow.style.display = "block";
     } else {
       mkRow.style.display = "none";
+    }
+
+    // Audit link
+    const auditRow  = document.getElementById("audit-link-row");
+    const auditLink = document.getElementById("audit-link");
+    if (auditUrl) {
+      auditLink.href = auditUrl;
+      auditRow.style.display = "block";
+    } else {
+      auditRow.style.display = "none";
     }
 
     // Hero meta
