@@ -30,6 +30,7 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
   - Q3 = current pool total (dollar amount)
   - P7 = last data update date, Q7 = last data update time (user sets manually; drives auto-refresh comparison)
   - P10 = Master Tournament Key URL
+  - P13 = Audit PDF URL (player bracket printouts; shown as footnote in All Players tab)
   - S4:U(lastRow) = pre-tournament temp player list: S=Name, T=FlagUrl (flagcdn URL), U=Status
 - **Per-player sheets** (tab named by player): `L148` = their champion country pick
 - **World Cup 2026 Results sheet** — sentinel cells that drive stage completion and awards:
@@ -60,6 +61,7 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
   },
   "poolTotal": 0,
   "masterKeyUrl": "",
+  "auditUrl": "",
   "dataUpdatedAt": "M/d/yyyy h:mm a",
   "hasTempPlayers": false,
   "tempPlayers": [{ "name", "flagUrl", "status" }],
@@ -119,6 +121,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - Tournament champion banner appears above the leaderboard only when `tournamentChampion.team` is non-empty.
 - Pool total card in Stages tab shown only when `poolTotal > 0`; payout amounts per card calculated from it.
 - Master Tournament Key card in All Players tab shown only when `masterKeyUrl` is non-empty.
+- Audit footnote link (`#audit-link-row`) in All Players tab shown only when `auditUrl` is non-empty; very low-opacity, opens in new tab, links to a PDF of pre-tournament bracket printouts.
 - Flag images use `flagcdn.com/w40/{code}.png` (w80 for champion banner). Country → code mapping is `COUNTRY_FLAGS` in the `.gs`.
 
 ### Tabs
@@ -126,7 +129,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - **Standings** — top 7 leaderboard + special awards + champion banner
 - **Stages** — pool total card + payout structure + tournament stage progress
 - **Points** — bar chart + points gap (top 7)
-- **All Players** — master key card + full compact table with bracket links
+- **All Players** — master key card + full compact table with bracket links + audit footnote link
 
 ### Tab Switching
 Tab buttons use `data-tab` attributes; `switchTab(name)` / `activateTab(name)` match by attribute (not index). `activateTab` is the internal function used by both user clicks and auto-switching.
