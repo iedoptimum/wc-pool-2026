@@ -82,6 +82,11 @@ const COUNTRY_FLAGS = {
   "Panama":           "pa",
 };
 
+// Reverse map: flagcdn code → country name (derived once at load time)
+const FLAG_TO_COUNTRY = Object.fromEntries(
+  Object.entries(COUNTRY_FLAGS).map(([name, code]) => [code, name])
+);
+
 // ─────────────────────────────────────────────────────────────
 // Main API endpoint
 // ─────────────────────────────────────────────────────────────
@@ -90,31 +95,21 @@ function doGet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const lb = ss.getSheetByName("Leaderboard");
 
-  // Player List: F=Name, G=TotalPoints, H=CountryFlag,
+  // Player List: F=Name, G=TotalPoints, H=CountryFlag (pre-filled),
   //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL
-  const lastRow   = lb.getLastRow();
-  const dataRange = lb.getRange(4, 6, lastRow - 3, 9); // F4:N(lastRow)
-  const rows      = dataRange.getValues();
+  const rows = lb.getRange("F4:N41").getValues();
 
   const players = rows
     .filter(r => r[0] !== "")  // skip blank rows; keep 0-point players
     .map(r => {
-      const playerName   = String(r[0]);
-      const championName = getChampionName(ss, playerName);  // L148 of player sheet
-      const countryCode  = getCountryCode(championName);     // flagcdn.com code
-      const flagUrl      = countryCode
-        ? "https://flagcdn.com/w40/" + countryCode + ".png"
-        : "";
-
-      // Write flag URL back to Leaderboard col H so sheet stays in sync
-      writeToLeaderboard(lb, rows, playerName, flagUrl);
-
+      const flagUrl      = String(r[2] || "").trim();  // col H — already written in sheet
+      const code         = (flagUrl.match(/\/w\d+\/(.+?)\.png$/) || [])[1] || "";
+      const championName = FLAG_TO_COUNTRY[code] || "";
       return {
-        name:          playerName,
-        points:        Number(r[1]),
-        champion:      championName,
-        countryCode:   countryCode,
-        flagUrl:       flagUrl,
+        name:            String(r[0]),
+        points:          Number(r[1]),
+        champion:        championName,
+        flagUrl:         flagUrl,
         groupPts:        Number(r[3]),
         knockoutPts:     Number(r[4]),
         midPts:          Number(r[5]),
@@ -167,16 +162,18 @@ function doGet() {
     ? String(resultsSheet.getRange("B175").getValue()).trim() !== ""
     : false;
 
-  const poolTotal    = Number(lb.getRange("Q3").getValue()) || 0;
-  const masterKeyUrl = String(lb.getRange("P10").getValue()).trim();
-  const auditUrl     = String(lb.getRange("P13").getValue()).trim();
+  // Batch all misc Leaderboard reads: P3:S13 covers Q3, S4, P7, Q7, P10, P13
+  const lbMisc    = lb.getRange("P3:S13").getValues();
+  const poolTotal    = Number(lbMisc[0][1]) || 0;      // Q3
+  const masterKeyUrl = String(lbMisc[7][0]).trim();    // P10
+  const auditUrl     = String(lbMisc[10][0]).trim();   // P13
 
   // Temp player list: S4=Name, T4=FlagUrl, U4=Status (pre-tournament sign-up)
-  const s4Val = String(lb.getRange(4, 19).getValue()).trim();
+  const s4Val = String(lbMisc[1][3]).trim();           // S4
   const hasTempPlayers = s4Val !== "";
   let tempPlayers = [];
   if (hasTempPlayers) {
-    const tempData = lb.getRange(4, 19, Math.max(lastRow - 3, 1), 3).getValues();
+    const tempData = lb.getRange("S4:U41").getValues();
     tempPlayers = tempData
       .filter(r => String(r[0]).trim() !== "")
       .map(r => ({
@@ -189,8 +186,8 @@ function doGet() {
   // P7 = date, Q7 = time — format using the sheet's own timezone to avoid UTC shift
   let dataUpdatedAt = "";
   try {
-    const dateVal = lb.getRange("P7").getValue();
-    const timeVal = lb.getRange("Q7").getValue();
+    const dateVal = lbMisc[4][0];  // P7
+    const timeVal = lbMisc[4][1];  // Q7
     if (dateVal instanceof Date && timeVal instanceof Date) {
       const tz = ss.getSpreadsheetTimeZone();
       const datePart = Utilities.formatDate(dateVal, tz, "M/d/yyyy");
@@ -233,19 +230,6 @@ function doGet() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Read champion country name from L148 of the player's sheet
-// ─────────────────────────────────────────────────────────────
-function getChampionName(ss, playerName) {
-  try {
-    const sheet = ss.getSheetByName(playerName);
-    if (!sheet) return "";
-    return String(sheet.getRange("L148").getValue()).trim();
-  } catch(e) {
-    return "";
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
 // Look up flagcdn.com country code from country name
 // Falls back to empty string if not found
 // ─────────────────────────────────────────────────────────────
@@ -257,19 +241,6 @@ function getCountryCode(countryName) {
   const lower = countryName.toLowerCase();
   const match = Object.keys(COUNTRY_FLAGS).find(k => k.toLowerCase() === lower);
   return match ? COUNTRY_FLAGS[match] : "";
-}
-
-// ─────────────────────────────────────────────────────────────
-// Write flag URL back to Leaderboard col H to keep sheet in sync
-// ─────────────────────────────────────────────────────────────
-function writeToLeaderboard(lb, rows, playerName, flagUrl) {
-  try {
-    const rowIndex = rows.findIndex(r => String(r[0]) === playerName);
-    if (rowIndex === -1) return;
-    lb.getRange(rowIndex + 4, 8).setValue(flagUrl);
-  } catch(e) {
-    // Non-critical — silently skip
-  }
 }
 
 // ─────────────────────────────────────────────────────────────
