@@ -25,14 +25,11 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
 ```
 
 ### Google Sheet Structure (File ID: `14KZgWp-H8g7LXgUQxgAi9E5CHUGo7WFlqsB7Splzj1o`)
-- **Leaderboard sheet** (data starts row 4):
-  - F=Name, G=TotalPoints, H=FlagUrl (written back by script), I=GroupPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL
-  - Q3 = current pool total (dollar amount)
-  - P7 = last data update date, Q7 = last data update time (user sets manually; drives auto-refresh comparison)
-  - P10 = Master Tournament Key URL
-  - P13 = Audit PDF URL (player bracket printouts; shown as footnote in All Players tab)
-  - S4:U(lastRow) = pre-tournament temp player list: S=Name, T=FlagUrl (flagcdn URL), U=Status
-- **Per-player sheets** (tab named by player): `L148` = their champion country pick
+- **Leaderboard sheet** — player data read as fixed range **F4:N41**:
+  - F=Name, G=TotalPoints, H=FlagUrl (**must be pre-filled manually**; script reads it, no longer writes it), I=GroupPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL
+  - Misc cells batched in one read of **P3:S13**: Q3=pool total, P7=update date, Q7=update time, P10=Master Key URL, P13=Audit PDF URL, S4=temp player sentinel
+  - S4:U41 = pre-tournament temp player list: S=Name, T=FlagUrl (flagcdn URL), U=Status
+- **Per-player sheets are NOT read at runtime.** Champion country name is derived from col H flag URL via `FLAG_TO_COUNTRY` reverse map (code → name), not from individual player sheet tabs.
 - **World Cup 2026 Results sheet** — sentinel cells that drive stage completion and awards:
 
 | Cell | Drives |
@@ -82,13 +79,13 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
 - **Trigger**: `S4` in Leaderboard sheet has a value → `hasTempPlayers = true`
 - **Signed tab** appears as the first tab and becomes the default active tab on first render
 - Shows players from S:U with rank #, champion flag (or ❓ if T is blank), name, and status badge
-- Player count pill shows temp list size instead of regular players (who all have 0 pts and are filtered out)
+- Player count pill shows temp list size instead of regular players
 - When S4 is cleared (tournament starts), tab disappears and Standings becomes the default again
 - `defaultTabSet` flag (JS module-level) prevents auto-tab-switching after first render; user's manual tab selection is preserved across background refreshes
 
 ### Auto-Refresh Logic (index.html `loadData`)
 1. Render from `localStorage` cache immediately (key: `wc26_pool_cache`)
-2. Fetch fresh data in background with `?_cb=Date.now()` + `cache:"no-store"` to bust HTTP cache
+2. Fetch fresh data in background with `?_cb=Date.now()` to bust HTTP cache; **`cache:"no-store"` is intentionally absent** — it breaks iOS Safari's redirect handling for Apps Script URLs (302 → `script.googleusercontent.com`). A 15-second `AbortController` timeout is used instead.
 3. Compare `newData.dataUpdatedAt` against cached value — only re-render if different
 4. `dataUpdatedAt` is formatted server-side by Apps Script using `Utilities.formatDate` + sheet timezone (avoids UTC shift from `toISOString()`)
 
@@ -122,7 +119,8 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - Pool total card in Stages tab shown only when `poolTotal > 0`; payout amounts per card calculated from it.
 - Master Tournament Key card in All Players tab shown only when `masterKeyUrl` is non-empty.
 - Audit footnote link (`#audit-link-row`) in All Players tab shown only when `auditUrl` is non-empty; very low-opacity, opens in new tab, links to a PDF of pre-tournament bracket printouts.
-- Flag images use `flagcdn.com/w40/{code}.png` (w80 for champion banner). Country → code mapping is `COUNTRY_FLAGS` in the `.gs`.
+- Flag images use `flagcdn.com/w40/{code}.png` (w80 for champion banner). Country → code mapping is `COUNTRY_FLAGS` in the `.gs`; `FLAG_TO_COUNTRY` is the reverse (code → country name), built at load time from the same object.
+- **If a player's col H flag URL is blank, their champion will show as `"—"`.** Populate col H manually when adding new players.
 
 ### Tabs
 - **Signed** — pre-tournament only; players from S:U temp list; hidden once S4 is cleared
