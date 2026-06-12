@@ -520,9 +520,14 @@
     if (!cachedUpdatedAt) showLoading(true);
 
     // Step 2: silently fetch fresh data in the background
+    // Note: cache:"no-store" is intentionally absent — it breaks iOS Safari's
+    // redirect handling for Apps Script URLs. The ?_cb= timestamp busts the cache.
+    const controller = new AbortController();
+    const timeoutId  = setTimeout(() => controller.abort(), 15000);
     try {
       const url = SHEET_API + "?_cb=" + Date.now();
-      const res  = await fetch(url, { cache: "no-store" });
+      const res  = await fetch(url, { redirect: "follow", signal: controller.signal });
+      clearTimeout(timeoutId);
       if (!res.ok) throw new Error("HTTP " + res.status);
       const newData = await res.json();
 
@@ -533,6 +538,7 @@
       }
       showLoading(false);
     } catch(err) {
+      clearTimeout(timeoutId);
       console.error("Background update check failed:", err);
       if (!cachedUpdatedAt) showError();
     }
