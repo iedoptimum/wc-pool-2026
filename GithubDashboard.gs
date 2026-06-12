@@ -97,7 +97,7 @@ function doGet() {
   const rows      = dataRange.getValues();
 
   const players = rows
-    .filter(r => r[0] !== "" && Number(r[1]) > 0)  // skip blanks and zeros
+    .filter(r => r[0] !== "")  // skip blank rows; keep 0-point players
     .map(r => {
       const playerName   = String(r[0]);
       const championName = getChampionName(ss, playerName);  // L148 of player sheet

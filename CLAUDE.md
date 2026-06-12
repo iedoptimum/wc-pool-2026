@@ -114,7 +114,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - **`stageLeaders.secondPlace`** — always `players[1]` (second in total points sort).
 
 ### Display Rules
-- Players with 0 **total** points are filtered out entirely (intentional — `Number(r[1]) > 0`).
+- Players with 0 **total** points are included in All Players tab; blank rows are still skipped (`r[0] !== ""`). Standings/Points tabs show top 7 only so 0-point players won't appear there naturally.
 - Standings and Points tabs show **top 7** only (`players.slice(0, 7)`).
 - All Players tab shows **all players** in leaderboard sort order with point breakdowns.
 - Grand Champion badge (`.gc-badge`) renders inline on rank-1 leaderboard row when `grandChampionDone`.
