@@ -252,6 +252,23 @@
     .champion-sub { font-size:10px; color:var(--muted); margin-top:3px; }
     .champion-tbd { color:var(--dim); font-style:italic; font-size:14px; }
 
+    /* ── GROUP STAGE CONGRATS CARD (shown 1 day after stage completes) ── */
+    .gs-congrats {
+      margin: 0.75rem 1rem 0;
+      background: linear-gradient(135deg, rgba(52,201,122,0.12) 0%, rgba(52,201,122,0.04) 100%);
+      border: 1.5px solid rgba(52,201,122,0.35);
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gs-congrats-icon { font-size: 22px; flex-shrink: 0; }
+    .gs-congrats-body { flex: 1; min-width: 0; }
+    .gs-congrats-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 2px; }
+    .gs-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
+    .gs-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
     /* ── GRAND CHAMPION BADGE (rank-1 row) ── */
     .gc-badge {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -353,6 +370,17 @@
       <div class="champion-label">2026 World Cup Champion</div>
       <div class="champion-name" id="champion-name">TBD</div>
       <div class="champion-sub">FIFA World Cup 2026</div>
+    </div>
+  </div>
+
+  <div id="gs-congrats-card" style="display:none;">
+    <div class="gs-congrats">
+      <div class="gs-congrats-icon">👑</div>
+      <div class="gs-congrats-body">
+        <div class="gs-congrats-label">Group Stage King / Queen</div>
+        <div class="gs-congrats-name" id="gs-congrats-name">—</div>
+        <div class="gs-congrats-sub">Congratulations! 🎉</div>
+      </div>
     </div>
   </div>
 
@@ -664,6 +692,16 @@
       banner.style.display = "flex";
     } else {
       banner.style.display = "none";
+    }
+
+    // Group Stage congrats card — visible for 1 day after stage completes
+    const gsCard = document.getElementById("gs-congrats-card");
+    const gsExpiry = new Date('2026-07-01T00:00:00');
+    if (groupStageDone && stageLeaders?.groupStage && new Date() < gsExpiry) {
+      document.getElementById("gs-congrats-name").textContent = stageLeaders.groupStage;
+      gsCard.style.display = "block";
+    } else {
+      gsCard.style.display = "none";
     }
 
     // Signed Up tab — show/hide based on S4
