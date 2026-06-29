@@ -150,7 +150,7 @@ function doGet() {
   // Stage completion flags driven by Results sheet
   const resultsSheet    = ss.getSheetByName("World Cup 2026 Results");
   const groupStageDone  = resultsSheet
-    ? String(resultsSheet.getRange("F90").getValue()).trim() !== ""
+    ? String(resultsSheet.getRange("F108").getValue()).trim() !== ""
     : false;
   const knockoutBusterDone = resultsSheet
     ? String(resultsSheet.getRange("K141").getValue()).trim() !== ""

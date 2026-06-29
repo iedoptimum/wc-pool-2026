@@ -34,7 +34,7 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
 
 | Cell | Drives |
 |------|--------|
-| F90  | Group Stage done |
+| F108 | Group Stage done |
 | K141 | Knockout Buster done |
 | R129 | Mid-Tournament done |
 | B175 | Grand Champion / 2nd Place / Golden Awards done |
