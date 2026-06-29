@@ -26,7 +26,7 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
 
 ### Google Sheet Structure (File ID: `14KZgWp-H8g7LXgUQxgAi9E5CHUGo7WFlqsB7Splzj1o`)
 - **Leaderboard sheet** — player data read as fixed range **F4:N41**:
-  - F=Name, G=TotalPoints, H=FlagUrl (**must be pre-filled manually**; script reads it, no longer writes it), I=GroupPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL
+  - F=Name, G=TotalPoints, H=FlagUrl (**must be pre-filled manually**; script reads it, no longer writes it), I=GroupPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL, O=GroupBonusPts
   - Misc cells batched in one read of **P3:S13**: Q3=pool total, P7=update date, Q7=update time, P10=Master Key URL, P13=Audit PDF URL, S4=temp player sentinel
   - S4:U41 = pre-tournament temp player list: S=Name, T=FlagUrl (flagcdn URL), U=Status
 - **Per-player sheets are NOT read at runtime.** Champion country name is derived from col H flag URL via `FLAG_TO_COUNTRY` reverse map (code → name), not from individual player sheet tabs.
@@ -106,6 +106,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 
 ### Special Winner Logic (GithubDashboard.gs)
 - **`topPlayer(players, field)`** — only considers players with `field > 0`; prevents false leaders when a category hasn't started.
+- **Group Stage King/Queen** — winner = highest `groupCombinedPts` (col I + col O); tiebreak = first in total-points sort.
 - **3rd Place Pick** — winner = any player with `thirdPlacePts === 5`; tiebreak = lowest total points.
 - **Golden Awards** — winner = most `goldenAwardsPts`; tiebreak = lowest total points.
 - **`stageLeaders.secondPlace`** — always `players[1]` (second in total points sort).

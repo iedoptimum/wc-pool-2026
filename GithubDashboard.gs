@@ -96,8 +96,8 @@ function doGet() {
   const lb = ss.getSheetByName("Leaderboard");
 
   // Player List: F=Name, G=TotalPoints, H=CountryFlag (pre-filled),
-  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL
-  const rows = lb.getRange("F4:N41").getValues();
+  //              I=GroupStgPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL, O=GroupBonusPts
+  const rows = lb.getRange("F4:O41").getValues();
 
   const players = rows
     .filter(r => r[0] !== "")  // skip blank rows; keep 0-point players
@@ -105,17 +105,21 @@ function doGet() {
       const flagUrl      = String(r[2] || "").trim();  // col H — already written in sheet
       const code         = (flagUrl.match(/\/w\d+\/(.+?)\.png$/) || [])[1] || "";
       const championName = FLAG_TO_COUNTRY[code] || "";
+      const groupPts        = Number(r[3]);
+      const groupBonusPts   = Number(r[9]);  // col O
       return {
-        name:            String(r[0]),
-        points:          Number(r[1]),
-        champion:        championName,
-        flagUrl:         flagUrl,
-        groupPts:        Number(r[3]),
-        knockoutPts:     Number(r[4]),
-        midPts:          Number(r[5]),
-        thirdPlacePts:   Number(r[6]),
-        goldenAwardsPts: Number(r[7]),
-        bracketUrl:      String(r[8] || "").trim(),
+        name:               String(r[0]),
+        points:             Number(r[1]),
+        champion:           championName,
+        flagUrl:            flagUrl,
+        groupPts:           groupPts,
+        groupBonusPts:      groupBonusPts,
+        groupCombinedPts:   groupPts + groupBonusPts,
+        knockoutPts:        Number(r[4]),
+        midPts:             Number(r[5]),
+        thirdPlacePts:      Number(r[6]),
+        goldenAwardsPts:    Number(r[7]),
+        bracketUrl:         String(r[8] || "").trim(),
       };
     })
     .sort((a, b) => b.points - a.points);
@@ -138,7 +142,7 @@ function doGet() {
     : null;
 
   const stageLeaders = players.length > 0 ? {
-    groupStage:  topPlayer(players, "groupPts"),
+    groupStage:  topPlayer(players, "groupCombinedPts"),
     knockout:    topPlayer(players, "knockoutPts"),
     midTourney:  topPlayer(players, "midPts"),
     overall:     players[0].name,
