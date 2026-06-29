@@ -27,16 +27,19 @@ python generate_wc_ics.py other.json # custom input
   reference them update automatically — e.g. setting `W_M73` updates R16 match M90.
 
 ## Delivery: pick ONE
-**A) Subscribe by URL (auto-refresh) — recommended.** Commit the `.ics` to this
-repo (GitHub Pages), then in Google Calendar: Other calendars → From URL →
-`https://<user>.github.io/<repo>/World_Cup_2026.ics`. Google re-polls on its own
-(minutes up to ~24h). Each round: edit `results.json`, regenerate, push.
+**A) Subscribe by URL (auto-refresh) — recommended.** Google Calendar → Other calendars → From URL:
+```
+https://iedoptimum.github.io/wc-pool-2026/calendar-games/World_Cup_2026.ics
+```
+Google re-polls on its own (up to ~24h). Each round: edit `results.json`, regenerate, push.
 ```bash
 python generate_wc_ics.py
 git add World_Cup_2026.ics results.json
 git commit -m "Resolve <round> teams"
 git push
 ```
+> **Google Calendar cache stuck?** Unsubscribe, then re-subscribe with `?v=2` (or `?v=3`, etc.) appended to the URL — Google treats it as a new URL and forces a fresh fetch. iPhone calendar fetches directly and always shows current data.
+
 **B) Re-import file (instant, manual).** Regenerate and import the `.ics` again;
 stable UIDs update the existing events.
 
@@ -49,14 +52,23 @@ stable UIDs update the existing events.
 | QF (Jul 9–11) | `W_M97..W_M100` → SF (M101–102) | — |
 | SF (Jul 14–15) | `W_M101/W_M102` (Final), `L_M101/L_M102` (3rd place) | — |
 
-## Optional next step
-Auto-populate `results.json` from the **World Cup 2026 Results** sheet (match #s
-align with FIFA's official numbering used here) instead of hand-editing — via CSV
-export or an Apps Script endpoint.
+## R32 bracket (M73–M88) — fill `W_M##` as results come in
 
-## Continuing in VS Code
-1. Save these files into the repo folder; open in VS Code (`code .` from Git Bash).
-2. Edit `results.json`, run the generator, push per the workflow above.
-3. If using an AI coding assistant in VS Code (e.g. Claude Code), point it at this
-   file for context — it captures every decision. Claude Code docs:
-   https://docs.claude.com/en/docs/claude-code/overview
+| Match | Date (ET) | Home | Away | Venue |
+|-------|-----------|------|------|-------|
+| M73 | Jun 28 15:00 | South Africa (RU_A) | Canada (RU_B) | SoFi Stadium, Inglewood |
+| M74 | Jun 29 16:30 | Germany (W_E) | Paraguay (T3) | Gillette Stadium, Foxborough |
+| M75 | Jun 29 21:00 | Netherlands (W_F) | Morocco (RU_C) | Estadio BBVA, Monterrey |
+| M76 | Jun 29 13:00 | Brazil (W_C) | Japan (RU_F) | NRG Stadium, Houston |
+| M77 | Jun 30 17:00 | France (W_I) | Sweden (T3) | MetLife Stadium, East Rutherford |
+| M78 | Jun 30 13:00 | Ivory Coast (RU_E) | Norway (RU_I) | AT&T Stadium, Arlington |
+| M79 | Jun 30 21:00 | Mexico (W_A) | Ecuador (T3) | Estadio Azteca, Mexico City |
+| M80 | Jul 1 12:00 | England (W_L) | DR Congo (T3) | Mercedes-Benz Stadium, Atlanta |
+| M81 | Jul 1 20:00 | USA (W_D) | Bosnia & Herzegovina (T3) | Levi's Stadium, Santa Clara |
+| M82 | Jul 1 16:00 | Belgium (W_G) | Senegal (T3) | Lumen Field, Seattle |
+| M83 | Jul 2 19:00 | Portugal (RU_K) | Croatia (RU_L) | BMO Field, Toronto |
+| M84 | Jul 2 15:00 | Spain (W_H) | Austria (RU_J) | SoFi Stadium, Inglewood |
+| M85 | Jul 2 23:00 | Switzerland (W_B) | Algeria (T3) | BC Place, Vancouver |
+| M86 | Jul 3 18:00 | Argentina (W_J) | Cape Verde (RU_H) | Hard Rock Stadium, Miami Gardens |
+| M87 | Jul 3 21:30 | Colombia (W_K) | Ghana (T3) | Arrowhead Stadium, Kansas City |
+| M88 | Jul 3 14:00 | Australia (RU_D) | Egypt (RU_G) | AT&T Stadium, Arlington |
