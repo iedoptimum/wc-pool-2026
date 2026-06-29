@@ -18,14 +18,14 @@ A mobile-first FIFA World Cup 2026 pool leaderboard dashboard. Players predict m
 
 ### Data Flow
 ```
-Google Sheet (Leaderboard tab, cols F–N, row 4+)
+Google Sheet (Leaderboard tab, cols F–O, row 4+)
     → GithubDashboard.gs doGet() Web App
         → JSON payload fetched by index.html on load
             → renderAll(data) → renderLeaderboard / renderStages / renderChart / renderAllPlayers / renderSignedUp
 ```
 
 ### Google Sheet Structure (File ID: `14KZgWp-H8g7LXgUQxgAi9E5CHUGo7WFlqsB7Splzj1o`)
-- **Leaderboard sheet** — player data read as fixed range **F4:N41**:
+- **Leaderboard sheet** — player data read as fixed range **F4:O41**:
   - F=Name, G=TotalPoints, H=FlagUrl (**must be pre-filled manually**; script reads it, no longer writes it), I=GroupPts, J=KnockoutPts, K=MidTourneyPts, L=3rdPlacePts, M=GoldenAwardsPts, N=BracketURL, O=GroupBonusPts
   - Misc cells batched in one read of **P3:S13**: Q3=pool total, P7=update date, Q7=update time, P10=Master Key URL, P13=Audit PDF URL, S4=temp player sentinel
   - S4:U41 = pre-tournament temp player list: S=Name, T=FlagUrl (flagcdn URL), U=Status
@@ -50,7 +50,8 @@ Google Sheet (Leaderboard tab, cols F–N, row 4+)
 {
   "players": [{
     "name", "points", "champion", "flagUrl",
-    "groupPts", "knockoutPts", "midPts", "thirdPlacePts", "goldenAwardsPts", "bracketUrl"
+    "groupPts", "groupBonusPts", "groupCombinedPts",
+    "knockoutPts", "midPts", "thirdPlacePts", "goldenAwardsPts", "bracketUrl"
   }],
   "stageLeaders": {
     "groupStage", "knockout", "midTourney",
