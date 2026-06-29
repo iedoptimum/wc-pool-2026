@@ -118,6 +118,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - All Players tab shows **all players** in leaderboard sort order with point breakdowns.
 - Grand Champion badge (`.gc-badge`) renders inline on rank-1 leaderboard row when `grandChampionDone`.
 - Tournament champion banner appears above the leaderboard only when `tournamentChampion.team` is non-empty.
+- Group Stage congrats card (`.gs-congrats`, `#gs-congrats-card`) appears in Standings between the champion banner and leaderboard rows when `groupStageDone` is true **and** `new Date() < new Date('2026-07-01T00:00:00')` — hardcoded 1-day window; expires automatically.
 - Pool total card in Stages tab shown only when `poolTotal > 0`; payout amounts per card calculated from it.
 - Master Tournament Key card in All Players tab shown only when `masterKeyUrl` is non-empty.
 - Audit footnote link (`#audit-link-row`) in All Players tab shown only when `auditUrl` is non-empty; very low-opacity, opens in new tab, links to a PDF of pre-tournament bracket printouts.
@@ -126,7 +127,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 
 ### Tabs
 - **Signed** — pre-tournament only; players from S:U temp list; hidden once S4 is cleared
-- **Standings** — top 7 leaderboard + special awards + champion banner
+- **Standings** — champion banner + temporary Group Stage congrats card + top 7 leaderboard + special awards
 - **Stages** — pool total card + payout structure + tournament stage progress
 - **Points** — bar chart + points gap (top 7)
 - **All Players** — master key card + full compact table with bracket links + audit footnote link
