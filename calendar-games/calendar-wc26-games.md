@@ -41,13 +41,13 @@ git push
 stable UIDs update the existing events.
 
 ## Resolution timeline
-| After | Fill |
-|-------|------|
-| Group stage (Jun 27) | `W_*`, `RU_*`, all `T3_*` → resolves R32 (M73–88) |
-| R32 | `W_M73..W_M88` → R16 (M89–96) |
-| R16 | `W_M89..W_M96` → QF (M97–100) |
-| QF | `W_M97..W_M100` → SF (M101–102) |
-| SF | `W_M101/W_M102` (Final), `L_M101/L_M102` (3rd place) |
+| After | Fill | Status |
+|-------|------|--------|
+| Group stage (Jun 27) | `W_*`, `RU_*`, all `T3_*` → resolves R32 (M73–88) | ✅ Done |
+| R32 (Jun 28 – Jul 3) | `W_M73..W_M88` → R16 (M89–96) | ⚽ In progress |
+| R16 (Jul 4–5) | `W_M89..W_M96` → QF (M97–100) | — |
+| QF (Jul 9–11) | `W_M97..W_M100` → SF (M101–102) | — |
+| SF (Jul 14–15) | `W_M101/W_M102` (Final), `L_M101/L_M102` (3rd place) | — |
 
 ## Optional next step
 Auto-populate `results.json` from the **World Cup 2026 Results** sheet (match #s
