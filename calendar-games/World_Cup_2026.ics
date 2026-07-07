@@ -1314,7 +1314,7 @@ UID:wc2026-m100@wc2026.techy
 DTSTAMP:20260609T000000Z
 DTSTART;TZID=America/New_York:20260711T210000
 DTEND;TZID=America/New_York:20260711T234500
-SUMMARY:⚽ Quarterfinal (M100): Winner M95 vs Winner M96
+SUMMARY:⚽ Quarterfinal (M100): Argentina vs Switzerland
 LOCATION:Arrowhead Stadium\, Kansas City
 BEGIN:VALARM
 TRIGGER:-PT30M
