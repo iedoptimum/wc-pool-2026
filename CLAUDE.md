@@ -119,6 +119,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - Grand Champion badge (`.gc-badge`) renders inline on rank-1 leaderboard row when `grandChampionDone`.
 - Tournament champion banner appears above the leaderboard only when `tournamentChampion.team` is non-empty.
 - Group Stage congrats card (`.gs-congrats`, `#gs-congrats-card`) appears in Standings between the champion banner and leaderboard rows when `groupStageDone` is true **and** `new Date() < new Date('2026-07-01T00:00:00')` — hardcoded 1-day window; expires automatically.
+- Knockout Buster congrats card (`.kb-congrats`, `#kb-congrats-card`) appears at the very top of Standings (above the champion banner) when `knockoutBusterDone` is true **and** `new Date() < new Date('2026-07-08T00:00:00')` — hardcoded 1-day window (added 2026-07-07); expires automatically. Shows `stageLeaders.knockout`.
 - Pool total card in Stages tab shown only when `poolTotal > 0`; payout amounts per card calculated from it.
 - Master Tournament Key card in All Players tab shown only when `masterKeyUrl` is non-empty.
 - Audit footnote link (`#audit-link-row`) in All Players tab shown only when `auditUrl` is non-empty; very low-opacity, opens in new tab, links to a PDF of pre-tournament bracket printouts.

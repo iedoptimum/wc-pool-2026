@@ -269,6 +269,23 @@
     .gs-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
     .gs-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+    /* ── KNOCKOUT BUSTER CONGRATS CARD (shown for 1 day after stage completes) ── */
+    .kb-congrats {
+      margin: 0.75rem 1rem 0;
+      background: linear-gradient(135deg, rgba(240,192,64,0.12) 0%, rgba(240,192,64,0.04) 100%);
+      border: 1.5px solid rgba(240,192,64,0.35);
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .kb-congrats-icon { font-size: 22px; flex-shrink: 0; }
+    .kb-congrats-body { flex: 1; min-width: 0; }
+    .kb-congrats-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 2px; }
+    .kb-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
+    .kb-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
     /* ── GRAND CHAMPION BADGE (rank-1 row) ── */
     .gc-badge {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -361,6 +378,17 @@
     <div class="state-title">Couldn't load data</div>
     <div class="state-sub">Check that the Apps Script is deployed and the URL is set correctly.</div>
     <button class="retry-btn" onclick="loadData()">Retry</button>
+  </div>
+
+  <div id="kb-congrats-card" style="display:none;">
+    <div class="kb-congrats">
+      <div class="kb-congrats-icon">🎯</div>
+      <div class="kb-congrats-body">
+        <div class="kb-congrats-label">Knockout Buster Winner</div>
+        <div class="kb-congrats-name" id="kb-congrats-name">—</div>
+        <div class="kb-congrats-sub">Congratulations! 🎉</div>
+      </div>
+    </div>
   </div>
 
   <div id="champion-banner" class="champion-banner" style="display:none;">
@@ -702,6 +730,16 @@
       gsCard.style.display = "block";
     } else {
       gsCard.style.display = "none";
+    }
+
+    // Knockout Buster congrats card — visible for 1 day after stage completes
+    const kbCard = document.getElementById("kb-congrats-card");
+    const kbExpiry = new Date('2026-07-08T00:00:00');
+    if (knockoutBusterDone && stageLeaders?.knockout && new Date() < kbExpiry) {
+      document.getElementById("kb-congrats-name").textContent = stageLeaders.knockout;
+      kbCard.style.display = "block";
+    } else {
+      kbCard.style.display = "none";
     }
 
     // Signed Up tab — show/hide based on S4
