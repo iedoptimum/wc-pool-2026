@@ -11,7 +11,7 @@ A mobile-first FIFA World Cup 2026 pool leaderboard dashboard. Players predict m
 
 ## Repository Structure
 
-- **`index.html`** — the entire frontend: HTML, CSS, and JavaScript in one file. No build step, no dependencies to install.
+- **`index.html`** — the entire frontend: HTML, CSS, and JavaScript in one file. No build step, no dependencies to install (Chart.js is loaded from a CDN `<script>` tag for the Points-tab bar chart).
 - **`GithubDashboard.gs`** — Google Apps Script (backend API). Lives locally for version control but must be manually copied into the Apps Script editor (`Extensions → Apps Script`) and redeployed as a new Web App version after every change.
 
 ## Key Architecture
@@ -111,6 +111,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - **3rd Place Pick** — winner = any player with `thirdPlacePts === 5`; tiebreak = lowest total points.
 - **Golden Awards** — winner = most `goldenAwardsPts`; tiebreak = lowest total points.
 - **`stageLeaders.secondPlace`** — always `players[1]` (second in total points sort).
+- **Knockout Buster winner is locked** — `KNOCKOUT_BUSTER_WINNER` constant in `GithubDashboard.gs` (currently `"NeilW"`) overrides `stageLeaders.knockout` once `knockoutBusterDone` is true. Col J (KnockoutPts) keeps accumulating through later knockout rounds, so recomputing the live leader after the stage ends can surface a different player (e.g. the Mid-Tournament winner) instead of the original winner. Update this constant manually if the locked winner is ever wrong.
 
 ### Display Rules
 - Players with 0 **total** points are included in All Players tab; blank rows are still skipped (`r[0] !== ""`). Standings/Points tabs show top 7 only so 0-point players won't appear there naturally.
@@ -128,7 +129,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 
 ### Tabs
 - **Signed** — pre-tournament only; players from S:U temp list; hidden once S4 is cleared
-- **Standings** — champion banner + temporary Group Stage congrats card + top 7 leaderboard + special awards
+- **Standings** — temporary Knockout Buster congrats card (top) + champion banner + temporary Group Stage congrats card + top 7 leaderboard + special awards
 - **Stages** — pool total card + payout structure + tournament stage progress
 - **Points** — bar chart + points gap (top 7)
 - **All Players** — master key card + full compact table with bracket links + audit footnote link

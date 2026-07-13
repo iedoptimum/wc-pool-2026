@@ -141,16 +141,6 @@ function doGet() {
       }).name
     : null;
 
-  const stageLeaders = players.length > 0 ? {
-    groupStage:  topPlayer(players, "groupCombinedPts"),
-    knockout:    topPlayer(players, "knockoutPts"),
-    midTourney:  topPlayer(players, "midPts"),
-    overall:     players[0].name,
-    secondPlace: players.length > 1 ? players[1].name : null,
-    thirdPlace:   thirdPlaceWinner,
-    goldenAwards: goldenAwardsWinner,
-  } : {};
-
   // Stage completion flags driven by Results sheet
   const resultsSheet    = ss.getSheetByName("World Cup 2026 Results");
   const groupStageDone  = resultsSheet
@@ -159,6 +149,22 @@ function doGet() {
   const knockoutBusterDone = resultsSheet
     ? String(resultsSheet.getRange("K141").getValue()).trim() !== ""
     : false;
+
+  // Knockout Buster winner is locked in once the stage is done — knockoutPts
+  // keeps accumulating through later knockout rounds, so recomputing the
+  // live leader after this stage ends can surface a different player
+  // (e.g. the Mid-Tournament winner) instead of the original winner.
+  const KNOCKOUT_BUSTER_WINNER = "NeilW";
+
+  const stageLeaders = players.length > 0 ? {
+    groupStage:  topPlayer(players, "groupCombinedPts"),
+    knockout:    knockoutBusterDone ? KNOCKOUT_BUSTER_WINNER : topPlayer(players, "knockoutPts"),
+    midTourney:  topPlayer(players, "midPts"),
+    overall:     players[0].name,
+    secondPlace: players.length > 1 ? players[1].name : null,
+    thirdPlace:   thirdPlaceWinner,
+    goldenAwards: goldenAwardsWinner,
+  } : {};
   const midTourneyDone = resultsSheet
     ? String(resultsSheet.getRange("R129").getValue()).trim() !== ""
     : false;
