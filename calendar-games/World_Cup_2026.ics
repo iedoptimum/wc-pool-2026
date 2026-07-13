@@ -1327,7 +1327,7 @@ UID:wc2026-m101@wc2026.techy
 DTSTAMP:20260609T000000Z
 DTSTART;TZID=America/New_York:20260714T150000
 DTEND;TZID=America/New_York:20260714T174500
-SUMMARY:⚽ Semifinal (M101): Winner M97 vs Winner M98
+SUMMARY:⚽ Semifinal (M101): France vs Spain
 LOCATION:AT&T Stadium\, Arlington
 BEGIN:VALARM
 TRIGGER:-PT30M
@@ -1340,7 +1340,7 @@ UID:wc2026-m102@wc2026.techy
 DTSTAMP:20260609T000000Z
 DTSTART;TZID=America/New_York:20260715T150000
 DTEND;TZID=America/New_York:20260715T174500
-SUMMARY:⚽ Semifinal (M102): Winner M99 vs Winner M100
+SUMMARY:⚽ Semifinal (M102): England vs Argentina
 LOCATION:Mercedes-Benz Stadium\, Atlanta
 BEGIN:VALARM
 TRIGGER:-PT30M

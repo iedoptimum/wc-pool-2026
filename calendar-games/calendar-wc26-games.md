@@ -49,8 +49,8 @@ stable UIDs update the existing events.
 | Group stage (Jun 27) | `W_*`, `RU_*`, all `T3_*` → resolves R32 (M73–88) | ✅ Done |
 | R32 (Jun 28 – Jul 3) | `W_M73..W_M88` → R16 (M89–96) | ✅ Done |
 | R16 (Jul 4–7) | `W_M89..W_M96` → QF (M97–100) | ✅ Done |
-| QF (Jul 9–11) | `W_M97..W_M100` → SF (M101–102) | ⚽ In progress |
-| SF (Jul 14–15) | `W_M101/W_M102` (Final), `L_M101/L_M102` (3rd place) | — |
+| QF (Jul 9–11) | `W_M97..W_M100` → SF (M101–102) | ✅ Done |
+| SF (Jul 14–15) | `W_M101/W_M102` (Final), `L_M101/L_M102` (3rd place) | ⚽ In progress |
 
 ## R32 results (M73–M88) — all resolved
 
@@ -86,11 +86,18 @@ stable UIDs update the existing events.
 | M95 | Jul 7 12:00 | Argentina (W_M86) | Egypt (W_M88) | **Argentina** | Mercedes-Benz Stadium, Atlanta |
 | M96 | Jul 7 16:00 | Switzerland (W_M85) | Colombia (W_M87) | **Switzerland** | BC Place, Vancouver |
 
-## Quarterfinals (M97–M100) — full bracket set
+## Quarterfinals (M97–M100) — all resolved
+
+| Match | Date (ET) | Home | Away | Winner | Venue |
+|-------|-----------|------|------|--------|-------|
+| M97 | Jul 9 16:00 | Morocco | France | **France** | Gillette Stadium, Foxborough |
+| M98 | Jul 10 15:00 | Spain | Belgium | **Spain** | SoFi Stadium, Inglewood |
+| M99 | Jul 11 17:00 | Norway | England | **England** | Hard Rock Stadium, Miami Gardens |
+| M100 | Jul 11 21:00 | Argentina | Switzerland | **Argentina** | Arrowhead Stadium, Kansas City |
+
+## Semifinals (M101–M102) — bracket set
 
 | Match | Date (ET) | Matchup | Venue |
 |-------|-----------|---------|-------|
-| M97 | Jul 9 16:00 | Morocco vs France | Gillette Stadium, Foxborough |
-| M98 | Jul 10 15:00 | Spain vs Belgium | SoFi Stadium, Inglewood |
-| M99 | Jul 11 17:00 | Norway vs England | Hard Rock Stadium, Miami Gardens |
-| M100 | Jul 11 21:00 | Argentina vs Switzerland | Arrowhead Stadium, Kansas City |
+| M101 | Jul 14 15:00 | France vs Spain | AT&T Stadium, Arlington |
+| M102 | Jul 15 15:00 | England vs Argentina | Mercedes-Benz Stadium, Atlanta |
