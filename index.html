@@ -286,6 +286,23 @@
     .kb-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
     .kb-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+    /* ── MID-TOURNAMENT CONGRATS CARD (shown for 1 day after stage completes) ── */
+    .mt-congrats {
+      margin: 0.75rem 1rem 0;
+      background: linear-gradient(135deg, rgba(74,159,232,0.12) 0%, rgba(74,159,232,0.04) 100%);
+      border: 1.5px solid rgba(74,159,232,0.35);
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mt-congrats-icon { font-size: 22px; flex-shrink: 0; }
+    .mt-congrats-body { flex: 1; min-width: 0; }
+    .mt-congrats-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); font-weight: 600; margin-bottom: 2px; }
+    .mt-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
+    .mt-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
     /* ── GRAND CHAMPION BADGE (rank-1 row) ── */
     .gc-badge {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -378,6 +395,17 @@
     <div class="state-title">Couldn't load data</div>
     <div class="state-sub">Check that the Apps Script is deployed and the URL is set correctly.</div>
     <button class="retry-btn" onclick="loadData()">Retry</button>
+  </div>
+
+  <div id="mt-congrats-card" style="display:none;">
+    <div class="mt-congrats">
+      <div class="mt-congrats-icon">📊</div>
+      <div class="mt-congrats-body">
+        <div class="mt-congrats-label">Mid-Tournament Winner</div>
+        <div class="mt-congrats-name" id="mt-congrats-name">—</div>
+        <div class="mt-congrats-sub">Congratulations! 🎉</div>
+      </div>
+    </div>
   </div>
 
   <div id="kb-congrats-card" style="display:none;">
@@ -730,6 +758,16 @@
       gsCard.style.display = "block";
     } else {
       gsCard.style.display = "none";
+    }
+
+    // Mid-Tournament congrats card — visible for 1 day after stage completes
+    const mtCard = document.getElementById("mt-congrats-card");
+    const mtExpiry = new Date('2026-07-14T00:00:00');
+    if (midTourneyDone && stageLeaders?.midTourney && new Date() < mtExpiry) {
+      document.getElementById("mt-congrats-name").textContent = stageLeaders.midTourney;
+      mtCard.style.display = "block";
+    } else {
+      mtCard.style.display = "none";
     }
 
     // Knockout Buster congrats card — visible for 1 day after stage completes
