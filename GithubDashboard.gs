@@ -128,9 +128,16 @@ function doGet() {
   // 3rd Place Pick winner: any player with thirdPlacePts === 5;
   // tiebreak = lowest total points
   const thirdPlaceCandidates = players.filter(p => p.thirdPlacePts === 5);
-  const thirdPlaceWinner = thirdPlaceCandidates.length > 0
+  const liveThirdPlaceWinner = thirdPlaceCandidates.length > 0
     ? thirdPlaceCandidates.reduce((a, b) => a.points <= b.points ? a : b).name
     : null;
+
+  // 3rd Place Pick winner is locked in once decided — the tiebreak (lowest
+  // total points) is unstable while later rounds (e.g. the Final) keep
+  // adding to everyone's total points, which could flip the tiebreak among
+  // multiple correct-pick candidates after the fact.
+  const THIRD_PLACE_WINNER = "EricC";
+  const thirdPlaceWinner = liveThirdPlaceWinner !== null ? THIRD_PLACE_WINNER : null;
 
   // Golden Awards winner: most points in col M; tiebreak = lowest total points
   const goldenCandidates = players.filter(p => p.goldenAwardsPts > 0);

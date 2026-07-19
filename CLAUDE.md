@@ -112,6 +112,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - **Golden Awards** — winner = most `goldenAwardsPts`; tiebreak = lowest total points.
 - **`stageLeaders.secondPlace`** — always `players[1]` (second in total points sort).
 - **Knockout Buster winner is locked** — `KNOCKOUT_BUSTER_WINNER` constant in `GithubDashboard.gs` (currently `"NeilW"`) overrides `stageLeaders.knockout` once `knockoutBusterDone` is true. Col J (KnockoutPts) keeps accumulating through later knockout rounds, so recomputing the live leader after the stage ends can surface a different player (e.g. the Mid-Tournament winner) instead of the original winner. Update this constant manually if the locked winner is ever wrong.
+- **3rd Place Pick winner is locked** — `THIRD_PLACE_WINNER` constant in `GithubDashboard.gs` (currently `"EricC"`) overrides `stageLeaders.thirdPlace` once a player with `thirdPlacePts === 5` exists (i.e. once `thirdPlaceDone` is true). The tiebreak (lowest total points among correct-pick candidates) is unstable while later rounds keep adding to everyone's total points, which could flip the tiebreak after the fact. Update this constant manually if the locked winner is ever wrong.
 
 ### Display Rules
 - Players with 0 **total** points are included in All Players tab; blank rows are still skipped (`r[0] !== ""`). Standings/Points tabs show top 7 only so 0-point players won't appear there naturally.
