@@ -24,6 +24,7 @@
       --green:       #34C97A;
       --red:         #E25555;
       --blue:        #4A9FE8;
+      --bronze:      #CD7F32;
     }
 
     html, body {
@@ -303,6 +304,23 @@
     .mt-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
     .mt-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+    /* ── 3RD PLACE PICK CONGRATS CARD (shown until 10am the day after stage completes) ── */
+    .tp-congrats {
+      margin: 0.75rem 1rem 0;
+      background: linear-gradient(135deg, rgba(205,127,50,0.14) 0%, rgba(205,127,50,0.04) 100%);
+      border: 1.5px solid rgba(205,127,50,0.35);
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tp-congrats-icon { font-size: 22px; flex-shrink: 0; }
+    .tp-congrats-body { flex: 1; min-width: 0; }
+    .tp-congrats-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--bronze); font-weight: 600; margin-bottom: 2px; }
+    .tp-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
+    .tp-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
     /* ── GRAND CHAMPION BADGE (rank-1 row) ── */
     .gc-badge {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -436,6 +454,17 @@
         <div class="gs-congrats-label">Group Stage King / Queen</div>
         <div class="gs-congrats-name" id="gs-congrats-name">—</div>
         <div class="gs-congrats-sub">Congratulations! 🎉</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tp-congrats-card" style="display:none;">
+    <div class="tp-congrats">
+      <div class="tp-congrats-icon">🥉</div>
+      <div class="tp-congrats-body">
+        <div class="tp-congrats-label">3rd Place Pick Winner</div>
+        <div class="tp-congrats-name" id="tp-congrats-name">—</div>
+        <div class="tp-congrats-sub">Congratulations! 🎉</div>
       </div>
     </div>
   </div>
@@ -778,6 +807,16 @@
       kbCard.style.display = "block";
     } else {
       kbCard.style.display = "none";
+    }
+
+    // 3rd Place Pick congrats card — visible until 10am the day after stage completes
+    const tpCard = document.getElementById("tp-congrats-card");
+    const tpExpiry = new Date('2026-07-19T10:00:00');
+    if (thirdPlaceDone && stageLeaders?.thirdPlace && new Date() < tpExpiry) {
+      document.getElementById("tp-congrats-name").textContent = stageLeaders.thirdPlace;
+      tpCard.style.display = "block";
+    } else {
+      tpCard.style.display = "none";
     }
 
     // Signed Up tab — show/hide based on S4

@@ -122,6 +122,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - Group Stage congrats card (`.gs-congrats`, `#gs-congrats-card`) appears in Standings between the champion banner and leaderboard rows when `groupStageDone` is true **and** `new Date() < new Date('2026-07-01T00:00:00')` — hardcoded 1-day window; expires automatically.
 - Knockout Buster congrats card (`.kb-congrats`, `#kb-congrats-card`) appears at the very top of Standings (above the champion banner) when `knockoutBusterDone` is true **and** `new Date() < new Date('2026-07-08T00:00:00')` — hardcoded 1-day window (added 2026-07-07); expires automatically. Shows `stageLeaders.knockout`.
 - Mid-Tournament congrats card (`.mt-congrats`, `#mt-congrats-card`) appears at the very top of Standings (above the Knockout Buster card) when `midTourneyDone` is true **and** `new Date() < new Date('2026-07-14T00:00:00')` — hardcoded 1-day window (added 2026-07-13); expires automatically. Shows `stageLeaders.midTourney`.
+- 3rd Place Pick congrats card (`.tp-congrats`, `#tp-congrats-card`) appears in Standings between the Group Stage congrats card and the leaderboard rows when `thirdPlaceDone` is true **and** `new Date() < new Date('2026-07-19T10:00:00')` — expires at 10am the day after the stage completes (added 2026-07-18). Shows `stageLeaders.thirdPlace`.
 - Pool total card in Stages tab shown only when `poolTotal > 0`; payout amounts per card calculated from it.
 - Master Tournament Key card in All Players tab shown only when `masterKeyUrl` is non-empty.
 - Audit footnote link (`#audit-link-row`) in All Players tab shown only when `auditUrl` is non-empty; very low-opacity, opens in new tab, links to a PDF of pre-tournament bracket printouts.
@@ -130,7 +131,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 
 ### Tabs
 - **Signed** — pre-tournament only; players from S:U temp list; hidden once S4 is cleared
-- **Standings** — temporary Knockout Buster congrats card (top) + champion banner + temporary Group Stage congrats card + top 7 leaderboard + special awards
+- **Standings** — temporary congrats cards (top-to-bottom: Mid-Tournament, Knockout Buster) + champion banner + temporary Group Stage congrats card + temporary 3rd Place Pick congrats card + top 7 leaderboard + special awards
 - **Stages** — pool total card + payout structure + tournament stage progress
 - **Points** — bar chart + points gap (top 7)
 - **All Players** — master key card + full compact table with bracket links + audit footnote link
