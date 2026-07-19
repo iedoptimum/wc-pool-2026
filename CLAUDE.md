@@ -101,7 +101,7 @@ Google Sheet (Leaderboard tab, cols F–O, row 4+)
 | 3 | Grand Champion 🏆 | `grandChampionDone` |
 | 4 | 2nd Place - Almost Champion | `grandChampionDone` |
 | 5 | 3rd Place Pick | `thirdPlaceDone` (skips yellow, goes upcoming→done) |
-| 6 | Golden Awards | `grandChampionDone` (skips yellow) |
+| 6 | Golden Awards | always grey/"No winner" (`forceNoWinner`) — see below |
 
 Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 
@@ -113,7 +113,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - **`stageLeaders.secondPlace`** — always `players[1]` (second in total points sort).
 - **Knockout Buster winner is locked** — `KNOCKOUT_BUSTER_WINNER` constant in `GithubDashboard.gs` (currently `"NeilW"`) overrides `stageLeaders.knockout` once `knockoutBusterDone` is true. Col J (KnockoutPts) keeps accumulating through later knockout rounds, so recomputing the live leader after the stage ends can surface a different player (e.g. the Mid-Tournament winner) instead of the original winner. Update this constant manually if the locked winner is ever wrong.
 - **3rd Place Pick winner is locked** — `THIRD_PLACE_WINNER` constant in `GithubDashboard.gs` (currently `"AndresD"`) overrides `stageLeaders.thirdPlace` once a player with `thirdPlacePts === 5` exists (i.e. once `thirdPlaceDone` is true). The tiebreak (lowest total points among correct-pick candidates) is unstable while later rounds keep adding to everyone's total points, which could flip the tiebreak after the fact. Update this constant manually if the locked winner is ever wrong.
-- **Golden Awards has no winner** — `goldenAwardsWinner` in `GithubDashboard.gs` is hardcoded to `null` (added 2026-07-19), overriding the live computation (`liveGoldenAwardsWinner`, still computed but unused). Col M (goldenAwardsPts) holds small partial-match counts, and no player actually correctly matched enough golden-award picks to win the category — the naive "most points" formula was surfacing a false leader. `stageLeaders.goldenAwards` is therefore always `null`, so the Stages tab "Golden Awards" row shows no winner even once its `done` status flips. Revert to `liveGoldenAwardsWinner` if the pool rules ever call for a partial-match leader instead of requiring an outright winner.
+- **Golden Awards has no winner** — `goldenAwardsWinner` in `GithubDashboard.gs` is hardcoded to `null` (added 2026-07-19), overriding the live computation (`liveGoldenAwardsWinner`, still computed but unused). Col M (goldenAwardsPts) holds small partial-match counts, and no player actually correctly matched enough golden-award picks to win the category — the naive "most points" formula was surfacing a false leader. `stageLeaders.goldenAwards` is therefore always `null`. On the frontend, `STAGES[6]` (Golden Awards) has a `forceNoWinner:true` flag (index.html) that pins its dot to grey (`status:"upcoming"`, ignoring `grandChampionDone`) and its Stages-tab subtext to "No winner" instead of "✓ Winner: —". Revert both sides if the pool rules ever call for a partial-match leader instead of requiring an outright winner.
 
 ### Display Rules
 - Players with 0 **total** points are included in All Players tab; blank rows are still skipped (`r[0] !== ""`). Standings/Points tabs show top 7 only so 0-point players won't appear there naturally.

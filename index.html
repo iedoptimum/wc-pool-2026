@@ -606,7 +606,7 @@
     { name:"Grand Champion 🏆",           status:"active",   payout:"50%", leaderKey:"overall" },
     { name:"2nd Place - Almost Champion", status:"active",   payout:"10%", leaderKey:"secondPlace" },
     { name:"3rd Place Pick",              status:"upcoming", payout:"5%",  leaderKey:"thirdPlace" },
-    { name:"Golden Awards",   status:"upcoming", payout:"5%",  leaderKey:"goldenAwards" },
+    { name:"Golden Awards",   status:"upcoming", payout:"5%",  leaderKey:"goldenAwards", forceNoWinner:true },
   ];
 
   const BAR_COLORS = ["#F0C040","#C0C8D8","#CD7F32"];
@@ -683,7 +683,7 @@
     STAGES[3].status = grandChampionDone  ? "done" : "active";
     STAGES[4].status = grandChampionDone  ? "done" : "active";
     STAGES[5].status = thirdPlaceDone   ? "done" : "upcoming";
-    STAGES[6].status = grandChampionDone ? "done" : "upcoming";
+    STAGES[6].status = "upcoming"; // Golden Awards has no winner — stays grey
 
     // Pool total card + payout amounts
     const ptCard = document.getElementById("pool-total-card");
@@ -926,6 +926,7 @@
         ? stageLeaders[s.leaderKey] : null;
 
       const subText =
+        s.forceNoWinner          ? "No winner" :
         s.status === "done"     ? "✓ Winner: " + (leader || "—") :
         s.status === "active"   ? "⚡ In progress" + (leader ? " · " + leader + " leading" : "") :
         "Upcoming";
