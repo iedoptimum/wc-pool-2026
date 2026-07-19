@@ -148,11 +148,11 @@ function doGet() {
       }).name
     : null;
 
-  // Golden Awards has no winner this tournament — no player correctly
-  // matched enough golden-award picks to win the category. Override the
-  // live computation so the Stages tab shows no winner instead of a false
-  // leader surfaced by partial-match points in col M.
-  const goldenAwardsWinner = null;
+  // Golden Awards winner is locked in to VicV once decided — same rationale
+  // as the other locks: the tiebreak (lowest total points) is unstable
+  // while everyone's total points keep climbing.
+  const GOLDEN_AWARDS_WINNER = "VicV";
+  const goldenAwardsWinner = liveGoldenAwardsWinner !== null ? GOLDEN_AWARDS_WINNER : null;
 
   // Stage completion flags driven by Results sheet
   const resultsSheet    = ss.getSheetByName("World Cup 2026 Results");
