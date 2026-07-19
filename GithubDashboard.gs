@@ -136,7 +136,7 @@ function doGet() {
   // total points) is unstable while later rounds (e.g. the Final) keep
   // adding to everyone's total points, which could flip the tiebreak among
   // multiple correct-pick candidates after the fact.
-  const THIRD_PLACE_WINNER = "EricC";
+  const THIRD_PLACE_WINNER = "AndresD";
   const thirdPlaceWinner = liveThirdPlaceWinner !== null ? THIRD_PLACE_WINNER : null;
 
   // Golden Awards winner: most points in col M; tiebreak = lowest total points
