@@ -321,6 +321,14 @@
     .tp-congrats-name  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--bright); line-height: 1; }
     .tp-congrats-sub   { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+    /* ── THANK YOU FOR PLAYING CARD (shown once tournament champion is set) ── */
+    .thanks-card {
+      margin: 0.75rem 1rem 0;
+      text-align: center;
+      padding: 0.6rem 1rem;
+    }
+    .thanks-text { font-size: 12px; color: var(--muted); letter-spacing: 0.3px; }
+
     /* ── GRAND CHAMPION BADGE (rank-1 row) ── */
     .gc-badge {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -445,6 +453,10 @@
       <div class="champion-name" id="champion-name">TBD</div>
       <div class="champion-sub">FIFA World Cup 2026</div>
     </div>
+  </div>
+
+  <div id="thanks-card" class="thanks-card" style="display:none;">
+    <div class="thanks-text">Thank you for playing! Until next World Cup! 🌎⚽</div>
   </div>
 
   <div id="gs-congrats-card" style="display:none;">
@@ -778,6 +790,9 @@
     } else {
       banner.style.display = "none";
     }
+
+    // Thank you for playing card — shown alongside the champion banner
+    document.getElementById("thanks-card").style.display = tournamentChampion?.team ? "block" : "none";
 
     // Group Stage congrats card — visible for 1 day after stage completes
     const gsCard = document.getElementById("gs-congrats-card");

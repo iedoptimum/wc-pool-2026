@@ -121,6 +121,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 - All Players tab shows **all players** in leaderboard sort order with point breakdowns.
 - Grand Champion badge (`.gc-badge`) renders inline on rank-1 leaderboard row when `grandChampionDone`.
 - Tournament champion banner appears above the leaderboard only when `tournamentChampion.team` is non-empty.
+- "Thank you for playing! Until next World Cup!" footnote (`#thanks-card`) appears directly under the champion banner, shown/hidden together with it (same `tournamentChampion.team` condition, no expiry).
 - Group Stage congrats card (`.gs-congrats`, `#gs-congrats-card`) appears in Standings between the champion banner and leaderboard rows when `groupStageDone` is true **and** `new Date() < new Date('2026-07-01T00:00:00')` — hardcoded 1-day window; expires automatically.
 - Knockout Buster congrats card (`.kb-congrats`, `#kb-congrats-card`) appears at the very top of Standings (above the champion banner) when `knockoutBusterDone` is true **and** `new Date() < new Date('2026-07-08T00:00:00')` — hardcoded 1-day window (added 2026-07-07); expires automatically. Shows `stageLeaders.knockout`.
 - Mid-Tournament congrats card (`.mt-congrats`, `#mt-congrats-card`) appears at the very top of Standings (above the Knockout Buster card) when `midTourneyDone` is true **and** `new Date() < new Date('2026-07-14T00:00:00')` — hardcoded 1-day window (added 2026-07-13); expires automatically. Shows `stageLeaders.midTourney`.
