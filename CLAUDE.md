@@ -134,7 +134,7 @@ Dot colours: green = `done`, gold = `active`, grey = `upcoming`.
 
 ### Tabs
 - **Signed** — pre-tournament only; players from S:U temp list; hidden once S4 is cleared
-- **Standings** — temporary congrats cards (top-to-bottom: Mid-Tournament, Knockout Buster) + champion banner + temporary Group Stage congrats card + temporary 3rd Place Pick congrats card + top 7 leaderboard + special awards
+- **Standings** — temporary congrats cards (top-to-bottom: Mid-Tournament, Knockout Buster) + champion banner + thank-you footnote + temporary Group Stage congrats card + temporary 3rd Place Pick congrats card + top 7 leaderboard + special awards
 - **Stages** — pool total card + payout structure + tournament stage progress
 - **Points** — bar chart + points gap (top 7)
 - **All Players** — master key card + full compact table with bracket links + audit footnote link
