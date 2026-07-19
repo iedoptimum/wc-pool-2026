@@ -141,12 +141,18 @@ function doGet() {
 
   // Golden Awards winner: most points in col M; tiebreak = lowest total points
   const goldenCandidates = players.filter(p => p.goldenAwardsPts > 0);
-  const goldenAwardsWinner = goldenCandidates.length > 0
+  const liveGoldenAwardsWinner = goldenCandidates.length > 0
     ? goldenCandidates.reduce((a, b) => {
         if (a.goldenAwardsPts !== b.goldenAwardsPts) return a.goldenAwardsPts > b.goldenAwardsPts ? a : b;
         return a.points <= b.points ? a : b;
       }).name
     : null;
+
+  // Golden Awards has no winner this tournament — no player correctly
+  // matched enough golden-award picks to win the category. Override the
+  // live computation so the Stages tab shows no winner instead of a false
+  // leader surfaced by partial-match points in col M.
+  const goldenAwardsWinner = null;
 
   // Stage completion flags driven by Results sheet
   const resultsSheet    = ss.getSheetByName("World Cup 2026 Results");
